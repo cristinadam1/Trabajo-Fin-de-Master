@@ -24,7 +24,7 @@ def create_generation(generation: GenerationCreate, db: Session = Depends(get_db
         politicas=result["politicas"],
         buenas_practicas=result["buenas_practicas"],
         acciones_prohibidas=result["acciones_prohibidas"],
-        riesgos=result["resgos"],
+        riesgos=result["riesgos"],
         explicacion=result["explicacion"],
     )
     db.add(db_generation)
@@ -87,7 +87,7 @@ def regenerate_generation(generacion_id: UUID, db: Session = Depends(get_db)):
         politicas=result["politicas"],
         buenas_practicas=result["buenas_practicas"],
         acciones_prohibidas=result["acciones_prohibidas"],
-        riesgos=result["resgos"],
+        riesgos=result["riesgos"],
         explicacion=result["explicacion"],
     )
     db.add(nueva_generation)
