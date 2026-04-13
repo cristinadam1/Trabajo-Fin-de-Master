@@ -5,7 +5,9 @@ from pydantic import BaseModel, Field
 
 
 class GenerationBase(BaseModel):
-    input_text: str = Field(..., min_length=1)
+    input_text: str = Field(..., min_length=1, 
+                            description="Texto de entrada para generar las políticas organizativas", 
+                            example="¿Cuáles son las mejores prácticas para la seguridad de la información en una empresa en Francia?")
 
 
 class GenerationCreate(GenerationBase):
