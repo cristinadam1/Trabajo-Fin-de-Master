@@ -83,4 +83,18 @@ function App() {
         }
       }
 
+      const handleDelete = async (id) => {
+        try {
+          await fetch(`${API_URL}/api/generations/${id}`, {
+            method: 'DELETE',
+          })
+          if (currentGeneration?.id === id) {
+            setCurrentGeneration(null)
+          }
+          fetchGenerations()
+        } catch (err) {
+          console.error('Error al borrar:', err)
+        }
+      }
+
 }
