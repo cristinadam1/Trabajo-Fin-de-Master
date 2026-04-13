@@ -6,7 +6,7 @@ function GenerationCard({
   onVerDetalles,
   onRegenerar,
   onToggleFavorite,
-  onDelete,
+  onEliminar,
 }) {
   const date = new Date(generation.created_at).toLocaleDateString('es-ES', {
     año: 'numeric',
@@ -31,7 +31,7 @@ function GenerationCard({
       <div className="card-actions">
         <button onClick={() => onVerDetalles(generation)}>Ver</button>
         <button onClick={() => onRegenerar(generation.id)}>Regenerar</button>
-        <button className="delete-btn" onClick={() => onDelete(generation.id)}>
+        <button className="delete-btn" onClick={() => onEliminar(generation.id)}>
           Eliminar
         </button>
       </div>
