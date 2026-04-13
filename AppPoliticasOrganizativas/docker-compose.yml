@@ -3,11 +3,11 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: policy_generator_db
+    container_name: app_politicas_db
     environment:
       POSTGRES_USER: cristina
       POSTGRES_PASSWORD: cristina123
-      POSTGRES_DB: policy_generator
+      POSTGRES_DB: app_politicas
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -20,9 +20,9 @@ services:
 
   backend:
     build: ./backend
-    container_name: policy_generator_backend
+    container_name: app_politicas_backend
     environment:
-      DATABASE_URL: postgresql://cristina:cristina123@db:5432/policy_generator
+      DATABASE_URL: postgresql://cristina:cristina123@db:5432/app_politicas
       LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:11434/api/generate}
       LLM_API_KEY: ${LLM_API_KEY:-}
       LLM_MODEL: ${LLM_MODEL:-llama3}
@@ -35,7 +35,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: policy_generator_frontend
+    container_name: app_politicas_frontend
     ports:
       - "3000:3000"
     depends_on:
