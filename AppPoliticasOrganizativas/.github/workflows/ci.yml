@@ -8,7 +8,7 @@ on:
 
 jobs:
   construir-backend:
-    name: Construir y verificar backend
+    name: Construir y Verificar Backend
     runs-on: ubuntu-latest
     steps:
       - name: Descargar código del repositorio
@@ -28,7 +28,7 @@ jobs:
         run: python -m py_compile backend/app/*.py
 
   construir-frontend:
-    name: Construir y verificar frontend
+    name: Construir y Verificar Frontend
     runs-on: ubuntu-latest
     steps:
       - name: Descargar código del repositorio
@@ -43,7 +43,7 @@ jobs:
         working-directory: ./frontend
         run: npm ci
       
-      - name: Compilar proyecto frontend (build)
+      - name: Compilar proyecto frontend (Build)
         working-directory: ./frontend
         run: npm run build
 
