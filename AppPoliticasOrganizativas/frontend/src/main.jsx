@@ -10,4 +10,16 @@ function App() {
     useEffect(() => {
       fetchGenerations()
     }, [])
+    
+    const fetchGenerations = async () => {
+        try {
+          const response = await fetch(`${API_URL}/api/generations`)
+          if (response.ok) {
+            const data = await response.json()
+            setGenerations(data)
+          }
+        } catch (err) {
+          console.error('Error al obtener las generaciones:', err)
+        }
+      }
 }
