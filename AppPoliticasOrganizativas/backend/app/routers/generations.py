@@ -11,7 +11,7 @@ from app.schemas import (
     GenerationListResponse,
     FavoriteUpdate,
 )
-from AppPoliticasOrganizativas.backend.app.services.llm import generate_policy_content
+from app.services.llm import generate_policy_content
 
 router = APIRouter()
 
