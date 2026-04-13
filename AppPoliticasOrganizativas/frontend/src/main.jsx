@@ -66,5 +66,21 @@ function App() {
           setLoading(false)
         }
       }
-      
+
+      const handleFavorito = async (id, isFavorite) => {
+        try {
+          await fetch(`${API_URL}/api/generations/${id}/favorite`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_favorite: isFavorite }),
+          })
+          if (currentGeneration?.id === id) {
+            setCurrentGeneration({ ...currentGeneration, is_favorite: isFavorite })
+          }
+          fetchGenerations()
+        } catch (err) {
+          console.error('Error al cambiar a favorito:', err)
+        }
+      }
+
 }
