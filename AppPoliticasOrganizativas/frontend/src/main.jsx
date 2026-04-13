@@ -23,7 +23,7 @@ function App() {
         }
       }
 
-    const handleGenerate = async (inputText) => {
+    const handleGenerar = async (inputText) => {
         setLoading(true)
         setError(null)
         try {
@@ -47,4 +47,24 @@ function App() {
           setLoading(false)
         }
       }
+
+      const handleRegenerar = async (id) => {
+        setLoading(true)
+        setError(null)
+        try {
+          const response = await fetch(`${API_URL}/api/regenerate/${id}`, {
+            method: 'POST',
+          })
+          if (response.ok) {
+            const data = await response.json()
+            setCurrentGeneration(data)
+            fetchGenerations()
+          }
+        } catch (err) {
+          setError('Error de conexión al regenerar. Intentalo de nuevo.')
+        } finally {
+          setLoading(false)
+        }
+      }
+      
 }
