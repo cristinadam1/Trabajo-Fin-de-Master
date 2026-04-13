@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import GenerationForm from './components/GenerationForm'
-import ResultsDisplay from './components/ResultsDisplay'
-import GenerationList from './components/GenerationList'
+import GenerationForm from './componentes/GenerationForm'
+import ResultsDisplay from './componentes/ResultsDisplay'
+import GenerationList from './componentes/GenerationList'
 import './App.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
