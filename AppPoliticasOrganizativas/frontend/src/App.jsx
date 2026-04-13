@@ -122,7 +122,7 @@ function App() {
           <h1>Generador de Políticas Organizativas</h1>
           <nav>
             <Link to="/">Inicio</Link>
-            <Link to="/history">Historial</Link>
+            <Link to="/historial">Historial</Link>
           </nav>
         </header>
 
@@ -148,7 +148,7 @@ function App() {
               }
             />
             <Route
-              path="/history"
+              path="/historial"
               element={
                 <GenerationList
                   generations={generations}
