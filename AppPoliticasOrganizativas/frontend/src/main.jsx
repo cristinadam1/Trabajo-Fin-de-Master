@@ -22,4 +22,29 @@ function App() {
           console.error('Error al obtener las generaciones:', err)
         }
       }
+
+    const handleGenerate = async (inputText) => {
+        setLoading(true)
+        setError(null)
+        try {
+          const response = await fetch(`${API_URL}/api/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input_text: inputText }),
+          })
+          if (response.ok) {
+            const data = await response.json()
+            setCurrentGeneration(data)
+            fetchGenerations()
+          } else {
+            const errData = await response.json()
+            const errorMsg = errData.detail || 'Error al generar contenido'
+            setError(errorMsg)
+          }
+        } catch (err) {
+          setError('Error de conexión con el servidor. Verifica que el backend está funcionando.')
+        } finally {
+          setLoading(false)
+        }
+      }
 }
