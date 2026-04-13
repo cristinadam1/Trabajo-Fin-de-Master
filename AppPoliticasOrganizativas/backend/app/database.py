@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://cristina:cristina123@localhost:5432/policy_generator"
+    "postgresql://cristina:cristina123@localhost:5432/app_politicas"
 )
 
 engine = create_engine(DATABASE_URL)
