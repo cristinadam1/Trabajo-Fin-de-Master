@@ -1,0 +1,49 @@
+.generation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .generation-form label {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .generation-form textarea {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    resize: vertical;
+    font-family: inherit;
+  }
+  
+  .generation-form textarea:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  
+  .generation-form button {
+    padding: 0.75rem 1.5rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .generation-form button:hover:not(:disabled) {
+    background-color: #2980b9;
+  }
+  
+  .generation-form button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+  }
