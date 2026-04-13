@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: policy_generator_db
+    environment:
+      POSTGRES_USER: cristina
+      POSTGRES_PASSWORD: cristina123
+      POSTGRES_DB: policy_generator
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: policy_generator_backend
+    environment:
+      DATABASE_URL: postgresql://cristina:cristina123@db:5432/policy_generator
+      LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:11434/api/generate}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-llama3}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: policy_generator_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8000
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
