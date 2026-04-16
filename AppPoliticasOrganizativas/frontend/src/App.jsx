@@ -75,7 +75,7 @@ function App() {
 
   const handleFavorito = async (id, isFavorite) => {
     try {
-      await fetch(`${API_URL}/api/generaciones/${id}/favorite`, {
+      await fetch(`${API_URL}/api/generaciones/${id}/favorito`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_favorite: isFavorite }),
