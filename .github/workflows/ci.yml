@@ -1,0 +1,48 @@
+name: Integración Continua (CI)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  construir-backend:
+    name: Construir y verificar backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código del repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar entorno de python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Instalar librerías del backend
+        working-directory: ./AppPoliticasOrganizativas/backend
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Verificar sintaxis de archivos python
+        run: python -m py_compile AppPoliticasOrganizativas/backend/app/*.py
+
+  construir-frontend:
+    name: Construir y verificar frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código del repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar entorno de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Instalar dependencias del frontend
+        working-directory: ./AppPoliticasOrganizativas/frontend
+        run: npm ci
+      
+      - name: Compilar proyecto frontend (Build)
+        working-directory: ./AppPoliticasOrganizativas/frontend
+        run: npm run build
