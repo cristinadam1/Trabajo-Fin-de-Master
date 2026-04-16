@@ -19,7 +19,7 @@ function App() {
 
   const fetchGenerations = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/generations`)
+      const response = await fetch(`${API_URL}/api/generaciones`)
       if (response.ok) {
         const data = await response.json()
         setGenerations(data)
@@ -33,7 +33,7 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(`${API_URL}/api/generate`, {
+      const response = await fetch(`${API_URL}/api/generar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input_text: inputText }),
@@ -58,7 +58,7 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(`${API_URL}/api/regenerate/${id}`, {
+      const response = await fetch(`${API_URL}/api/regenerar/${id}`, {
         method: 'POST',
       })
       if (response.ok) {
@@ -75,7 +75,7 @@ function App() {
 
   const handleFavorito = async (id, isFavorite) => {
     try {
-      await fetch(`${API_URL}/api/generations/${id}/favorite`, {
+      await fetch(`${API_URL}/api/generaciones/${id}/favorite`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_favorite: isFavorite }),
@@ -91,7 +91,7 @@ function App() {
 
   const handleEliminar = async (id) => {
     try {
-      await fetch(`${API_URL}/api/generations/${id}`, {
+      await fetch(`${API_URL}/api/generaciones/${id}`, {
         method: 'DELETE',
       })
       if (currentGeneration?.id === id) {
@@ -105,7 +105,7 @@ function App() {
 
   const handleVerDetalles = async (generation) => {
     try {
-      const response = await fetch(`${API_URL}/api/generations/${generation.id}`)
+      const response = await fetch(`${API_URL}/api/generaciones/${generation.id}`)
       if (response.ok) {
         const data = await response.json()
         setCurrentGeneration(data)
@@ -134,7 +134,7 @@ function App() {
               path="/"
               element={
                 <div className="home-page">
-                  <GenerationForm onGenerate={handleGenerar} loading={loading} />
+                  <GenerationForm onGenerar={handleGenerar} loading={loading} />
                   {currentGeneration && (
                     <ResultsDisplay
                       generation={currentGeneration}

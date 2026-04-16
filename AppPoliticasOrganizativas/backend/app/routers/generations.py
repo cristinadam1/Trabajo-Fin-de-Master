@@ -74,7 +74,7 @@ def update_favorite(
     return generation
 
 
-@router.post("/regenenerar/{generacion_id}", response_model=GenerationResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/regenerar/{generacion_id}", response_model=GenerationResponse, status_code=status.HTTP_201_CREATED)
 def regenerate_generation(generacion_id: UUID, db: Session = Depends(get_db)):
     original = db.query(Generation).filter(Generation.id == generacion_id).first()
     if not original:

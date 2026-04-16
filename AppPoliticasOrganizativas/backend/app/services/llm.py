@@ -4,9 +4,9 @@ import httpx
 from fastapi import HTTPException, status
 
 
-LLM_API_URL = os.getenv("LLM_API_URL", "http://localhost:11434/api/generar")
+LLM_API_URL = os.getenv("LLM_API_URL", "http://host.docker.internal:11434/api/generate")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-LLM_MODEL = os.getenv("LLM_MODEL", "llama3")
+LLM_MODEL = os.getenv("LLM_MODEL", "llama3.2:1b")
 
 
 def generate_policy_content(input_text: str) -> dict:
