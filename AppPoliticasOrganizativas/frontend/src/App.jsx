@@ -138,7 +138,7 @@ function App() {
                   {currentGeneration && (
                     <ResultsDisplay
                       generation={currentGeneration}
-                      onRegenerate={() => handleRegenerar(currentGeneration.id)}
+                      onRegenerar={() => handleRegenerar(currentGeneration.id)}
                       onToggleFavorite={(fav) =>
                         handleFavorito(currentGeneration.id, fav)
                       }
@@ -152,10 +152,10 @@ function App() {
               element={
                 <GenerationList
                   generations={generations}
-                  onViewDetail={handleVerDetalles}
-                  onRegenerate={handleRegenerar}
+                  onVerDetalles={handleVerDetalles}
+                  onRegenerar={handleRegenerar}
                   onToggleFavorite={handleFavorito}
-                  onDelete={handleEliminar}
+                  onEliminar={handleEliminar}
                 />
               }
             />

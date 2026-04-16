@@ -19,10 +19,10 @@ function GenerationList({
             <GenerationCard
               key={gen.id}
               generation={gen}
-              onViewDetail={onVerDetalles}
-              onRegenerate={onRegenerar}
+              onVerDetalles={onVerDetalles}
+              onRegenerar={onRegenerar}
               onToggleFavorite={onToggleFavorite}
-              onDelete={onEliminar}
+              onEliminar={onEliminar}
             />
           ))}
         </div>
