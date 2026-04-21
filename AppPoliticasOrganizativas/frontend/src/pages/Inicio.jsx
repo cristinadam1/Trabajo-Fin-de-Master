@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './Inicio.css'
 
 function Inicio() {
+  const [mostrarEjemplos, setMostrarEjemplos] = useState(false)
+
   return (
     <div className="inicio">
       <div className="inicio-contenido">
@@ -87,13 +90,20 @@ function Inicio() {
         </div>
 
         <div className="inicio-ejemplos">
-          <h3>Más ejemplos</h3>
-          <div className="inicio-ejemplos-lista">
-            <p>"Tienda online que vende ropa y gestiona datos de pago de clientes"</p>
-            <p>"Consultoría financiera que maneja información privilegiada de empresas"</p>
-            <p>"Hospital con 200 empleados que trata datos médicos de pacientes"</p>
-            <p>"Startup de tecnología con 15 empleados y acceso a datos de usuarios"</p>
-          </div>
+          <button 
+            className="inicio-ejemplos-boton" 
+            onClick={() => setMostrarEjemplos(!mostrarEjemplos)}
+          >
+            {mostrarEjemplos ? '▼' : '▶'} Más ejemplos
+          </button>
+          {mostrarEjemplos && (
+            <div className="inicio-ejemplos-lista">
+              <p>"Tienda online que vende ropa y gestiona datos de pago de clientes"</p>
+              <p>"Consultoría financiera que maneja información privilegiada de empresas"</p>
+              <p>"Hospital con 200 empleados que trata datos médicos de pacientes"</p>
+              <p>"Startup de tecnología con 15 empleados y acceso a datos de usuarios"</p>
+            </div>
+          )}
         </div>
 
         <div className="inicio-botones">
