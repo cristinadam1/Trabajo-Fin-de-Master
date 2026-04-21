@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Inicio from './pages/Inicio'
 import Generador from './pages/Generador'
 import Historial from './pages/Historial'
+import MarcoNormativo from './pages/MarcoNormativo'
 import './App.css'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
             <Link to="/">Inicio</Link>
             <Link to="/generador">Generador</Link>
             <Link to="/historial">Historial</Link>
+            <Link to="/marco-normativo">Marco Normativo</Link>
           </nav>
         </header>
 
@@ -22,6 +24,7 @@ function App() {
             <Route path="/" element={<Inicio />} />
             <Route path="/generador" element={<Generador />} />
             <Route path="/historial" element={<Historial />} />
+            <Route path="/marco-normativo" element={<MarcoNormativo />} />
           </Routes>
         </main>
       </div>

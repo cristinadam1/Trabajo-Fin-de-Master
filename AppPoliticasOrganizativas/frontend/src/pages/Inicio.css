@@ -210,3 +210,28 @@
   background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
 }
+
+.inicio-enlace-marco {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.inicio-enlace-marco a {
+  color: #3498db;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.inicio-enlace-marco a:hover {
+  text-decoration: underline;
+}
+
+.inicio-seccion a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.inicio-seccion a:hover {
+  text-decoration: underline;
+}

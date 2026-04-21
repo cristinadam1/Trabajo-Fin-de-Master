@@ -18,6 +18,11 @@ function Inicio() {
         <div className="inicio-seccion inicio-seccion-importancia">
           <h2>¿Por qué son importantes las políticas organizativas?</h2>
           <p>
+            Las políticas organizativas deben cumplir con el marco normativo aplicable. 
+            Consulta el <Link to="/marco-normativo">Marco Normativo</Link> para más información 
+            sobre RGPD, ISO 27001 y NIS2.
+          </p>
+          <p>
             Las políticas organizativas son fundamentales porque establecen las reglas y 
             directrices que rigen el funcionamiento de una empresa. Ayudan a:
           </p>
@@ -109,6 +114,12 @@ function Inicio() {
         <div className="inicio-botones">
           <Link to="/generador" className="inicio-boton inicio-boton-primario">
             Prueba el Generador →
+          </Link>
+        </div>
+
+        <div className="inicio-enlace-marco">
+          <Link to="/marco-normativo">
+            Ver marco normativo (RGPD, ISO 27001, NIS2) →
           </Link>
         </div>
       </div>

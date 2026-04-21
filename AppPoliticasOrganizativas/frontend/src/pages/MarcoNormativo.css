@@ -1,0 +1,110 @@
+.marco-normativo {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.marco-normativo-contenido h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.marco-normativo-introduccion {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.marco-normativo-introduccion p {
+  color: #856404;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.marco-normativo-introduccion p + p {
+  margin-top: 10px;
+}
+
+.marco-normativo-introduccion strong {
+  color: #533f03;
+}
+
+.marco-normativa {
+  margin-bottom: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.marco-normativa-boton {
+  width: 100%;
+  background: white;
+  border: none;
+  padding: 18px 20px;
+  text-align: left;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2c3e50;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 0.2s;
+}
+
+.marco-normativa-boton:hover {
+  background: #f8f9fa;
+}
+
+.marco-normativa-icono {
+  color: #3498db;
+  font-size: 0.9rem;
+}
+
+.marco-normativa-contenido {
+  background: white;
+  padding: 0 20px 20px 20px;
+  border-top: 1px solid #eee;
+}
+
+.marco-normativa-seccion {
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.marco-normativa-seccion:last-of-type {
+  border-bottom: none;
+}
+
+.marco-normativa-seccion h3 {
+  color: #2c3e50;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.marco-normativa-seccion p {
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.marco-normativa-enlace {
+  padding-top: 15px;
+}
+
+.marco-normativa-enlace a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.marco-normativa-enlace a:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
