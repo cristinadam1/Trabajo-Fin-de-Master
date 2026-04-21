@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import './GenerationForm.css'
+import './FormularioGeneracion.css'
 
-function GenerationForm({ onGenerar, loading }) {
+function FormularioGeneracion({ onGenerar, loading }) {
   const [inputText, setInputText] = useState('')
 
   const handleSubmit = (e) => {
@@ -12,7 +12,7 @@ function GenerationForm({ onGenerar, loading }) {
   }
 
   return (
-    <form className="generation-form" onSubmit={handleSubmit}>
+    <form className="formulario-generacion" onSubmit={handleSubmit}>
       <label htmlFor="input-text">
         Describe el contexto organizativo, técnico o empresarial:
       </label>
@@ -31,4 +31,4 @@ function GenerationForm({ onGenerar, loading }) {
   )
 }
 
-export default GenerationForm
+export default FormularioGeneracion

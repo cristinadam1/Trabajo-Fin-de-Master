@@ -1,0 +1,93 @@
+.mostrar-resultados {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resultados-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.resultados-header h2 {
+  color: #2c3e50;
+}
+
+.resultados-acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.boton-favorito, .boton-regenerar {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.boton-favorito {
+  background-color: #f39c12;
+  color: white;
+}
+
+.boton-favorito.active {
+  background-color: #e67e22;
+}
+
+.boton-regenerar {
+  background-color: #27ae60;
+  color: white;
+}
+
+.boton-regenerar:hover {
+  background-color: #229a53;
+}
+
+.resultados-input {
+  background: #ecf0f1;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.resultados-input h3 {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 0.5rem;
+}
+
+.resultados-input p {
+  color: #2c3e50;
+}
+
+.resultados-secciones {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.seccion-resultado {
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.seccion-resultado h3 {
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.seccion-resultado pre {
+  white-space: pre-wrap;
+  font-family: inherit;
+  color: #555;
+  line-height: 1.6;
+}

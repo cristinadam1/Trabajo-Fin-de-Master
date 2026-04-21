@@ -1,25 +1,20 @@
 import { useState, useEffect } from 'react'
-import GenerationForm from '../componentes/GenerationForm'
-import ResultsDisplay from '../componentes/ResultsDisplay'
+import FormularioGeneracion from '../components/FormularioGeneracion'
+import MostrarResultados from '../components/MostrarResultados'
+import './Generador.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 function Generador() {
-  const [generations, setGenerations] = useState([])
   const [loading, setLoading] = useState(false)
-  const [currentGeneration, setCurrentGeneration] = useState(null)
+  const [generacionActual, setGeneracionActual] = useState(null)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    fetchGenerations()
-  }, [])
-
-  const fetchGenerations = async () => {
+  const fetchGeneraciones = async () => {
     try {
       const response = await fetch(`${API_URL}/api/generaciones`)
       if (response.ok) {
-        const data = await response.json()
-        setGenerations(data)
+        await response.json()
       }
     } catch (err) {
       console.error('Error al obtener las generaciones:', err)
@@ -37,8 +32,8 @@ function Generador() {
       })
       if (response.ok) {
         const data = await response.json()
-        setCurrentGeneration(data)
-        fetchGenerations()
+        setGeneracionActual(data)
+        fetchGeneraciones()
       } else {
         const errData = await response.json()
         const errorMsg = errData.detail || 'Error al generar contenido'
@@ -60,8 +55,8 @@ function Generador() {
       })
       if (response.ok) {
         const data = await response.json()
-        setCurrentGeneration(data)
-        fetchGenerations()
+        setGeneracionActual(data)
+        fetchGeneraciones()
       }
     } catch (err) {
       setError('Error de conexión al regenerar. Intentalo de nuevo.')
@@ -77,10 +72,10 @@ function Generador() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_favorite: isFavorite }),
       })
-      if (currentGeneration?.id === id) {
-        setCurrentGeneration({ ...currentGeneration, is_favorite: isFavorite })
+      if (generacionActual?.id === id) {
+        setGeneracionActual({ ...generacionActual, is_favorite: isFavorite })
       }
-      fetchGenerations()
+      fetchGeneraciones()
     } catch (err) {
       console.error('Error al cambiar a favorito:', err)
     }
@@ -90,14 +85,14 @@ function Generador() {
     <div className="generador">
       {error && <div className="error-message">{error}</div>}
       
-      <GenerationForm onGenerar={handleGenerar} loading={loading} />
+      <FormularioGeneracion onGenerar={handleGenerar} loading={loading} />
       
-      {currentGeneration && (
-        <ResultsDisplay
-          generation={currentGeneration}
-          onRegenerar={() => handleRegenerar(currentGeneration.id)}
-          onToggleFavorite={(fav) =>
-            handleFavorito(currentGeneration.id, fav)
+      {generacionActual && (
+        <MostrarResultados
+          generacion={generacionActual}
+          onRegenerar={() => handleRegenerar(generacionActual.id)}
+          onToggleFavorito={(fav) =>
+            handleFavorito(generacionActual.id, fav)
           }
         />
       )}

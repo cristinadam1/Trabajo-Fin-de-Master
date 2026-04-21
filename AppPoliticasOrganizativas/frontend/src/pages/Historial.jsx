@@ -1,39 +1,39 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import GenerationList from '../componentes/GenerationList'
-import ResultsDisplay from '../componentes/ResultsDisplay'
+import { Link } from 'react-router-dom'
+import ListaGeneraciones from '../components/ListaGeneraciones'
+import MostrarResultados from '../components/MostrarResultados'
+import './Historial.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 function Historial() {
-  const [generations, setGenerations] = useState([])
+  const [generaciones, setGeneraciones] = useState([])
   const [loading, setLoading] = useState(false)
-  const [currentGeneration, setCurrentGeneration] = useState(null)
+  const [generacionActual, setGeneracionActual] = useState(null)
   const [error, setError] = useState(null)
-  const navigate = useNavigate()
 
   useEffect(() => {
-    fetchGenerations()
+    fetchGeneraciones()
   }, [])
 
-  const fetchGenerations = async () => {
+  const fetchGeneraciones = async () => {
     try {
       const response = await fetch(`${API_URL}/api/generaciones`)
       if (response.ok) {
         const data = await response.json()
-        setGenerations(data)
+        setGeneraciones(data)
       }
     } catch (err) {
       console.error('Error al obtener las generaciones:', err)
     }
   }
 
-  const handleVerDetalles = async (generation) => {
+  const handleVerDetalles = async (generacion) => {
     try {
-      const response = await fetch(`${API_URL}/api/generaciones/${generation.id}`)
+      const response = await fetch(`${API_URL}/api/generaciones/${generacion.id}`)
       if (response.ok) {
         const data = await response.json()
-        setCurrentGeneration(data)
+        setGeneracionActual(data)
       }
     } catch (err) {
       console.error('Error al obtener detalles:', err)
@@ -49,8 +49,8 @@ function Historial() {
       })
       if (response.ok) {
         const data = await response.json()
-        setCurrentGeneration(data)
-        fetchGenerations()
+        setGeneracionActual(data)
+        fetchGeneraciones()
       }
     } catch (err) {
       setError('Error de conexión al regenerar. Intentalo de nuevo.')
@@ -66,10 +66,10 @@ function Historial() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_favorite: isFavorite }),
       })
-      if (currentGeneration?.id === id) {
-        setCurrentGeneration({ ...currentGeneration, is_favorite: isFavorite })
+      if (generacionActual?.id === id) {
+        setGeneracionActual({ ...generacionActual, is_favorite: isFavorite })
       }
-      fetchGenerations()
+      fetchGeneraciones()
     } catch (err) {
       console.error('Error al cambiar a favorito:', err)
     }
@@ -80,10 +80,10 @@ function Historial() {
       await fetch(`${API_URL}/api/generaciones/${id}`, {
         method: 'DELETE',
       })
-      if (currentGeneration?.id === id) {
-        setCurrentGeneration(null)
+      if (generacionActual?.id === id) {
+        setGeneracionActual(null)
       }
-      fetchGenerations()
+      fetchGeneraciones()
     } catch (err) {
       console.error('Error eliminando:', err)
     }
@@ -93,24 +93,24 @@ function Historial() {
     <div className="historial">
       {error && <div className="error-message">{error}</div>}
       
-      {!currentGeneration ? (
-        <GenerationList
-          generations={generations}
+      {!generacionActual ? (
+        <ListaGeneraciones
+          generaciones={generaciones}
           onVerDetalles={handleVerDetalles}
           onRegenerar={handleRegenerar}
-          onToggleFavorite={handleFavorito}
+          onToggleFavorito={handleFavorito}
           onEliminar={handleEliminar}
         />
       ) : (
         <div>
-          <button onClick={() => setCurrentGeneration(null)}>
+          <button onClick={() => setGeneracionActual(null)}>
             Volver al historial
           </button>
-          <ResultsDisplay
-            generation={currentGeneration}
-            onRegenerar={() => handleRegenerar(currentGeneration.id)}
-            onToggleFavorite={(fav) =>
-              handleFavorito(currentGeneration.id, fav)
+          <MostrarResultados
+            generacion={generacionActual}
+            onRegenerar={() => handleRegenerar(generacionActual.id)}
+            onToggleFavorito={(fav) =>
+              handleFavorito(generacionActual.id, fav)
             }
           />
         </div>

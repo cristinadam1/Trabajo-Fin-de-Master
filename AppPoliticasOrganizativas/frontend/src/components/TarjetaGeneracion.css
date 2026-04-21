@@ -1,0 +1,67 @@
+.tarjeta-generacion {
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tarjeta-generacion.favorito {
+  border-color: #f39c12;
+  background: #fef9e7;
+}
+
+.tarjeta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tarjeta-fecha {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+}
+
+.tarjeta-favorito {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #f39c12;
+}
+
+.tarjeta-preview {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.tarjeta-acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tarjeta-acciones button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  background-color: #3498db;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.tarjeta-acciones button:hover {
+  background-color: #2980b9;
+}
+
+.tarjeta-acciones .boton-eliminar {
+  background-color: #e74c3c;
+}
+
+.tarjeta-acciones .boton-eliminar:hover {
+  background-color: #c0392b;
+}
