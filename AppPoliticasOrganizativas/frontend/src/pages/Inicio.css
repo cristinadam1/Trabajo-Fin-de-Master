@@ -1,5 +1,5 @@
 .inicio {
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 40px 20px;
 }
@@ -11,93 +11,149 @@
 .inicio-contenido h1 {
   color: #2c3e50;
   margin-bottom: 20px;
+  font-size: 2rem;
 }
 
 .inicio-descripcion {
   font-size: 1.1rem;
   color: #555;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   line-height: 1.7;
 }
 
 .inicio-seccion {
   background: white;
-  padding: 25px;
-  border-radius: 8px;
-  margin: 20px 0;
+  padding: 30px;
+  border-radius: 12px;
+  margin: 30px 0;
   text-align: left;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .inicio-seccion h2 {
   color: #2c3e50;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin-bottom: 15px;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 10px;
+  text-align: center;
 }
 
 .inicio-seccion p {
   color: #555;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   line-height: 1.6;
+  text-align: center;
 }
 
-.inicio-seccion ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.inicio-seccion-importancia {
+  border-top: 4px solid #3498db;
 }
 
-.inicio-seccion li {
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
-  color: #444;
+.inicio-seccion-beneficios {
+  border-top: 4px solid #27ae60;
 }
 
-.inicio-seccion li:last-child {
-  border-bottom: none;
+.inicio-seccion-generar {
+  border-top: 4px solid #9b59b6;
 }
 
-.inicio-seccion li strong {
+.inicio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.inicio-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.inicio-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.inicio-icono {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.inicio-card h3 {
   color: #2c3e50;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.inicio-card p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.inicio-lista {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.inicio-lista div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.inicio-lista span {
+  font-size: 1.3rem;
 }
 
 .inicio-ejemplo-contexto {
-  background: #ecf0f1;
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px 0;
-  text-align: left;
-  border-left: 4px solid #3498db;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 25px;
+  border-radius: 12px;
+  margin: 30px 0;
+  text-align: center;
 }
 
 .inicio-ejemplo-contexto h3 {
-  color: #2c3e50;
+  color: white;
   margin-bottom: 10px;
   margin-top: 0;
+  font-size: 1.1rem;
 }
 
 .inicio-ejemplo-contexto p {
   margin: 0;
   font-style: italic;
-  color: #555;
+  color: rgba(255, 255, 255, 0.95);
   font-size: 1rem;
+  text-align: center;
 }
 
 .inicio-boton {
   display: inline-block;
-  background: #3498db;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   color: white;
-  padding: 15px 40px;
-  border-radius: 4px;
+  padding: 15px 50px;
+  border-radius: 30px;
   text-decoration: none;
   font-weight: bold;
   font-size: 1.1rem;
   margin-top: 20px;
-  transition: background-color 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
 }
 
 .inicio-boton:hover {
-  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
 }

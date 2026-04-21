@@ -12,40 +12,70 @@ function Inicio() {
           específico de una empresa mediante el uso de modelos de lenguaje ejecutados en local.
         </p>
 
-        <div className="inicio-seccion">
+        <div className="inicio-seccion inicio-seccion-importancia">
           <h2>¿Por qué son importantes las políticas organizativas?</h2>
           <p>
             Las políticas organizativas son fundamentales porque establecen las reglas y 
             directrices que rigen el funcionamiento de una empresa. Ayudan a:
           </p>
-          <ul>
-            <li><strong>Garantizar el cumplimiento legal</strong> y evitar sanciones</li>
-            <li><strong>Proteger los datos</strong> de clientes y empleados</li>
-            <li><strong>Establecer expectativas claras</strong> para todos los miembros de la organización</li>
-            <li><strong>Reducir riesgos</strong> operativos y de seguridad</li>
-            <li><strong>Mejorar la comunicación</strong> interna y externa</li>
-          </ul>
+          <div className="inicio-grid">
+            <div className="inicio-card">
+              <span className="inicio-icono">⚖️</span>
+              <h3>Cumplimiento legal</h3>
+              <p>Evita sanciones y cumple con las normativas</p>
+            </div>
+            <div className="inicio-card">
+              <span className="inicio-icono">🔒</span>
+              <h3>Protección de datos</h3>
+              <p>Salvaguarda información sensible</p>
+            </div>
+            <div className="inicio-card">
+              <span className="inicio-icono">📋</span>
+              <h3>Expectativas claras</h3>
+              <p>Todos conocen sus responsabilidades</p>
+            </div>
+            <div className="inicio-card">
+              <span className="inicio-icono">⚠️</span>
+              <h3>Reducción de riesgos</h3>
+              <p>Minimiza problemas operativos</p>
+            </div>
+          </div>
         </div>
 
-        <div className="inicio-seccion">
+        <div className="inicio-seccion inicio-seccion-beneficios">
           <h2>Beneficios de tener políticas claras</h2>
-          <ul>
-            <li><strong>Consistencia:</strong> Todos actúan bajo las mismas reglas</li>
-            <li><strong>Transparencia:</strong> Los empleados conocen sus responsabilidades</li>
-            <li><strong>Protección:</strong> Se reducen riesgos legales y operativos</li>
-            <li><strong>Eficiencia:</strong> Menos tiempo tomando decisiones</li>
-            <li><strong>Profesionalidad:</strong> La empresa transmite confianza</li>
-          </ul>
+          <div className="inicio-grid">
+            <div className="inicio-card">
+              <span className="inicio-icono">✅</span>
+              <h3>Consistencia</h3>
+              <p>Todos actúan bajo las mismas reglas</p>
+            </div>
+            <div className="inicio-card">
+              <span className="inicio-icono">💬</span>
+              <h3>Transparencia</h3>
+              <p>Comunicación clara entre todos</p>
+            </div>
+            <div className="inicio-card">
+              <span className="inicio-icono">🚀</span>
+              <h3>Eficiencia</h3>
+              <p>Menos tiempo en decisiones</p>
+            </div>
+            <div className="inicio-card">
+              <span className="inicio-icono">💼</span>
+              <h3>Profesionalidad</h3>
+              <p>Transmite confianza a terceros</p>
+            </div>
+          </div>
         </div>
 
-        <div className="inicio-seccion">
+        <div className="inicio-seccion inicio-seccion-generar">
           <h2>¿Qué puedes generar?</h2>
-          <ul>
-            <li>Políticas organizativas personalizadas</li>
-            <li>Buenas prácticas recomendadas</li>
-            <li>Acciones prohibidas</li>
-            <li>Identificación de riesgos</li>
-          </ul>
+          <div className="inicio-lista">
+            <div><span>📄</span> Políticas organizativas personalizadas</div>
+            <div><span>👍</span> Buenas prácticas recomendadas</div>
+            <div><span>🚫</span> Acciones prohibidas</div>
+            <div><span>⚠️</span> Identificación de riesgos</div>
+          </div>
         </div>
 
         <div className="inicio-ejemplo-contexto">
@@ -57,7 +87,7 @@ function Inicio() {
         </div>
 
         <Link to="/generador" className="inicio-boton">
-          Prueba el Generador
+          Prueba el Generador →
         </Link>
       </div>
     </div>
