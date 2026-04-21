@@ -157,3 +157,41 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
 }
+
+.inicio-ejemplos {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 12px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.inicio-ejemplos h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.inicio-ejemplos-lista p {
+  padding: 10px 15px;
+  margin: 8px 0;
+  background: white;
+  border-radius: 6px;
+  font-style: italic;
+  color: #555;
+  border-left: 3px solid #9b59b6;
+}
+
+.inicio-botones {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.inicio-boton-primario {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
