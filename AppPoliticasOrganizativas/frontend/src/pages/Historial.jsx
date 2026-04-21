@@ -14,6 +14,7 @@ function Historial() {
 
   useEffect(() => {
     fetchGeneraciones()
+    setGeneracionActual(null)
   }, [])
 
   const fetchGeneraciones = async () => {
@@ -102,18 +103,13 @@ function Historial() {
           onEliminar={handleEliminar}
         />
       ) : (
-        <div>
-          <button onClick={() => setGeneracionActual(null)}>
-            Volver al historial
-          </button>
-          <MostrarResultados
+        <MostrarResultados
             generacion={generacionActual}
             onRegenerar={() => handleRegenerar(generacionActual.id)}
             onToggleFavorito={(fav) =>
               handleFavorito(generacionActual.id, fav)
             }
           />
-        </div>
       )}
     </div>
   )
