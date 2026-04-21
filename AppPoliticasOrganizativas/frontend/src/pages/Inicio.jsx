@@ -8,9 +8,8 @@ function Inicio() {
         <h1>Generador de Políticas Organizativas</h1>
         
         <p className="inicio-descripcion">
-          Esta herramienta genera automáticamente políticas organizativas adaptadas 
-          a tu contexto empresarial. Solo necesitas describir tu empresa o situación 
-          y la IA creará las políticas relevantes.
+        Esta herramienta permite generar políticas organizativas adaptadas al contexto específico de una empresa mediante el uso de modelos de lenguaje ejecutados en local. 
+        A partir de una descripción del entorno empresarial, el sistema produce directrices alineadas con buenas prácticas en seguridad, cumplimiento y gestión de riesgos.
         </p>
 
         <div className="inicio-ejemplo">
@@ -32,7 +31,7 @@ function Inicio() {
         </div>
 
         <Link to="/generador" className="inicio-boton">
-          Ir al Generador
+          Prueba el Generador
         </Link>
       </div>
     </div>

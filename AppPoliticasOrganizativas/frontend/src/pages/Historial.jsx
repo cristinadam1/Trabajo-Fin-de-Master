@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import ListaGeneraciones from '../components/ListaGeneraciones'
 import MostrarResultados from '../components/MostrarResultados'
 import './Historial.css'
@@ -11,11 +11,12 @@ function Historial() {
   const [loading, setLoading] = useState(false)
   const [generacionActual, setGeneracionActual] = useState(null)
   const [error, setError] = useState(null)
+  const location = useLocation()
 
   useEffect(() => {
     fetchGeneraciones()
     setGeneracionActual(null)
-  }, [])
+  }, [location])
 
   const fetchGeneraciones = async () => {
     try {
