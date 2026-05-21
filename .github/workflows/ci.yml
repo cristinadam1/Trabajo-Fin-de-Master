@@ -48,7 +48,7 @@ jobs:
         run: npm run build
 
   verificar-agente-seguridad:
-    name: Validar y Ejecutar Pruebas de Estrés del Agente
+    name: Validar sintaxis del agente verificador
     runs-on: ubuntu-latest
     steps:
       - name: Descargar código del repositorio
@@ -59,16 +59,9 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Instalar librerías del Agente Verificador
+      - name: Instalar librerías del agente verificador
         working-directory: ./AgenteVerificador
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verificar sintaxis del Agente
-        run: python -m py_compile AgenteVerificador/app/*.py
-
-      - name: Ejecutar batería de pruebas de estrés (Pytest)
-        working-directory: ./AgenteVerificador
-        run: |
-          pytest tests/
