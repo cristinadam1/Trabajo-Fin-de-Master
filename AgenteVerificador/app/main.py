@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from fastapi import FastAPI
 
-from app.config import settings
+from config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
