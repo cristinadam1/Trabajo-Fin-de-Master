@@ -1,18 +1,16 @@
-# Servidor web asíncrono
+# Servidor y API
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 
-# Validación de datos y configuración
+# Validacion y Configuracion
 pydantic==2.10.4
 pydantic-settings==2.7.1
 
-# ORM y driver PostgreSQL
+# Base de Datos
 sqlalchemy==2.0.36
 psycopg2-binary==2.9.10
 
-# Orquestación y validación de outputs del LLM juez
-guardrails-ai==0.5.12
-# Batería de pruebas automatizadas en entornos asíncronos
-pytest==8.3.4
-pytest-asyncio==0.25.0
-httpx==0.28.1
+# Testing
+pytest
+pytest-asyncio
+httpx
