@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: guardrail-db
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: guardrail
+      POSTGRES_PASSWORD: guardrail_pass
+      POSTGRES_DB: guardrail_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guardrail -d guardrail_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - guardrail_network
+
+  api:
+    build: .
+    container_name: guardrail-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - guardrail_network
+
+networks:
+  guardrail_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
