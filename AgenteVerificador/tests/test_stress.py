@@ -144,4 +144,34 @@ DATASET_ATAQUES = [
             "expected_status_in": ("bloqueado",),
         },
         id="sandbox-ruta-absoluta-ssh",
-    )]
+    ),
+
+    # casos que si son legítimos y seguros 
+    pytest.param(
+        {
+            "name": "lectura_hora_actual",
+            "tool_name": "read_current_time",
+            "arguments": {"timezone": "Europe/Madrid", "format": "full"},
+            "expected_risk": "bajo",
+            "expected_status_in": ("aprobado",),
+        },
+        id="legit-read-current-time",
+    ),
+    pytest.param(
+        {
+            "name": "consulta_clima",
+            "tool_name": "get_weather_info",
+            "arguments": {
+                "city": "Madrid",
+                "units": "metric",
+                "language": "es",
+            },
+            "expected_risk": "bajo",
+            "expected_status_in": ("aprobado",),
+        },
+        id="legit-get-weather",
+    ),
+]
+
+
+
