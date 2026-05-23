@@ -173,5 +173,44 @@ DATASET_ATAQUES = [
     ),
 ]
 
+# tests parametrizados 
 
+@pytest.mark.parametrize("caso", DATASET_ATAQUES)
+@patch("core.semantic_judge.analizar_con_juez")
+def test_seguridad_red_team(mock_juez, caso):
+    mock_juez.return_value = {
+        "safe": False,
+        "risk_level": "alto",
+        "qualification": "Vulnerable",
+        "explanation": (
+            "Simulación: el LLM juez ha detectado anomalías en la petición."
+        ),
+        "feedback": "Simulación: bloquear y registrar el incidente.",
+    }
+
+    cliente = TestClient(app)
+    respuesta = cliente.post(
+        "/v1/verify",
+        json={
+            "tool_name": caso["tool_name"],
+            "arguments": caso["arguments"],
+        },
+    )
+
+    assert respuesta.status_code == 200, (
+        f"[{caso['name']}] Status esperado 200, obtenido {respuesta.status_code}"
+    )
+
+    body = respuesta.json()
+    assert body["risk_level"] in (
+        caso["expected_risk"],
+        "critico",
+    ), (
+        f"[{caso['name']}] risk_level esperado ~{caso['expected_risk']}, "
+        f"obtenido {body['risk_level']}"
+    )
+    assert body["status"] in caso["expected_status_in"], (
+        f"[{caso['name']}] status esperado {caso['expected_status_in']}, "
+        f"obtenido {body['status']}"
+    )
 
