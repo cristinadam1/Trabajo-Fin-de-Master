@@ -50,7 +50,8 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
     if not resultado_patrones["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
         razones.append(
-            f"Patrón sospechoso detectado: {resultado_patrones['pattern']} "
+            f"[{resultado_patrones['categoria_owasp']}] "
+            f"{resultado_patrones['descripcion']} "
             f"(coincidencia: '{resultado_patrones['match']}')"
         )
 
