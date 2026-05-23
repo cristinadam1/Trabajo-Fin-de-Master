@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from typing import Literal
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from config import settings
@@ -9,6 +11,10 @@ from core.pipeline import evaluate_tool_call
 from database import Base, engine, get_db
 from models import SecurityAuditLog
 from schemas import ToolCallInput
+
+
+class ReviewRequest(BaseModel):
+    decision: Literal["aprobado", "bloqueado"]
 
 
 @asynccontextmanager
@@ -50,4 +56,20 @@ async def verify(datos: ToolCallInput, db: Session = Depends(get_db)):
         "status": resultado["status"],
         "tool_name": resultado["tool_name"],
         "reasons": resultado.get("reasons", []),
+    }
+
+
+@app.post("/v1/review/{log_id}")
+async def review(log_id: int, body: ReviewRequest, db: Session = Depends(get_db)):
+    log = db.query(SecurityAuditLog).filter(SecurityAuditLog.id == log_id).first()
+    if not log:
+        raise HTTPException(status_code=404, detail="Registro de auditoría no encontrado")
+
+    log.status = body.decision
+    db.commit()
+
+    return {
+        "message": "Auditoría manual completada",
+        "log_id": log_id,
+        "status": log.status,
     }
