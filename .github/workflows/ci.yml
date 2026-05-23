@@ -48,7 +48,7 @@ jobs:
         run: npm run build
 
   verificar-agente-seguridad:
-    name: Validar sintaxis del agente verificador
+    name: Validar sintaxis y pruebas del agente verificador
     runs-on: ubuntu-latest
     steps:
       - name: Descargar código del repositorio
@@ -65,3 +65,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verificar sintaxis de archivos Python
+        working-directory: ./AgenteVerificador
+        run: |
+          python -m py_compile app/*.py
+          python -m py_compile app/core/*.py
+          python -m py_compile tests/*.py
+
+      - name: Ejecutar batería de pruebas (Red Teaming)
+        working-directory: ./AgenteVerificador
+        env:
+          DATABASE_URL: sqlite:///test.db
+          LLM_API_KEY: sk-test-ci
+        run: |
+          python -m pytest tests/ -v --tb=short -q
