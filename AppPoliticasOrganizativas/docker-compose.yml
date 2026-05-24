@@ -25,7 +25,7 @@ services:
       DATABASE_URL: postgresql://cristina:cristina123@db:5432/app_politicas
       LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:11434/api/generate}
       LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_MODEL: ${LLM_MODEL:-llama-model-heretic}
+      LLM_MODEL: ${LLM_MODEL:-llama3.2-abliterated:latest}
     ports:
       - "8001:8000"
     depends_on:
