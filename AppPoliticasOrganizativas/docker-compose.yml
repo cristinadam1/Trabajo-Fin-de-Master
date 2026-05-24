@@ -25,9 +25,9 @@ services:
       DATABASE_URL: postgresql://cristina:cristina123@db:5432/app_politicas
       LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:11434/api/generate}
       LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_MODEL: ${LLM_MODEL:-llama3.2:1b}
+      LLM_MODEL: ${LLM_MODEL:-llama-model-heretic}
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -41,7 +41,7 @@ services:
     depends_on:
       - backend
     environment:
-      VITE_API_URL: http://localhost:8000
+      VITE_API_URL: http://localhost:8001
     restart: unless-stopped
 
 volumes:
