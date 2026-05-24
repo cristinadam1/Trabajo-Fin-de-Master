@@ -34,16 +34,14 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
             "reasons": ["Herramienta en lista blanca de seguridad."],
         }
 
-    # Capa 2 — Sandbox Guard
-    resultado_sandbox = inspect_arguments(datos.arguments)
-    if not resultado_sandbox["safe"]:
-        razones.append(resultado_sandbox["reason"])
-        return {
-            "risk_level": "critico",
-            "status": "bloqueado",
-            "tool_name": datos.tool_name,
-            "reasons": razones,
-        }
+    # Capa 2 — Semantic Judge (análisis semántico con LLM)
+    resultado_juez = await analizar_con_juez(datos.tool_name, datos.arguments)
+    if not resultado_juez["safe"]:
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        razones.append(
+            f"LLM juez califica como {resultado_juez['qualification']}: "
+            f"{resultado_juez['explanation']}"
+        )
 
     # Capa 3 — Pattern Matching
     resultado_patrones = escanear_argumentos(datos.arguments)
@@ -55,14 +53,16 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
             f"(coincidencia: '{resultado_patrones['match']}')"
         )
 
-    # Capa 4 — Semantic Judge
-    resultado_juez = await analizar_con_juez(datos.tool_name, datos.arguments)
-    if not resultado_juez["safe"]:
-        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
-        razones.append(
-            f"LLM juez califica como {resultado_juez['qualification']}: "
-            f"{resultado_juez['explanation']}"
-        )
+    # Capa 4 — Sandbox Guard
+    resultado_sandbox = inspect_arguments(datos.arguments)
+    if not resultado_sandbox["safe"]:
+        razones.append(resultado_sandbox["reason"])
+        return {
+            "risk_level": "critico",
+            "status": "bloqueado",
+            "tool_name": datos.tool_name,
+            "reasons": razones,
+        }
 
     # Consolidación final
     riesgo_final = riesgo_acumulado or "bajo"
