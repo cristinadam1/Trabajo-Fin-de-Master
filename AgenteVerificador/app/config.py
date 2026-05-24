@@ -9,8 +9,6 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     LLM_API_KEY: str
     LLM_MODEL_NAME: str = "meta-llama/Llama-Guard-3"
-    RISK_THRESHOLD_MEDIUM: float = 0.4
-    RISK_THRESHOLD_HIGH: float = 0.7
 
 
 settings = Settings()
