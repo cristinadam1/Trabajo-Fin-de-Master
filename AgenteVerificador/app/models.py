@@ -21,3 +21,21 @@ class SecurityAuditLog(Base):
         default=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
+
+
+class RegistroAuditoriaChat(Base):
+    __tablename__ = "chat_audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    consulta = Column(Text, nullable=False)
+    respuesta = Column(Text, nullable=False)
+    risk_level = Column(String, nullable=False)
+    verdict_qualification = Column(String, nullable=False)
+    explanation = Column(Text, nullable=True)
+    feedback = Column(Text, nullable=True)
+    status = Column(String, nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )

@@ -2,10 +2,10 @@ import logging
 from typing import Any
 
 from core.allowlist import check_allowlist
-from core.pattern_matching import escanear_argumentos
+from core.pattern_matching import escanear_argumentos, escanear_texto
 from core.sandbox_guard import inspect_arguments
 from core.semantic_judge import analizar_con_juez
-from schemas import ToolCallInput
+from schemas import EntradaSalidaChat, ToolCallInput
 
 logger = logging.getLogger(__name__)
 
@@ -78,5 +78,46 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
         "risk_level": riesgo_final,
         "status": status,
         "tool_name": datos.tool_name,
+        "reasons": razones,
+    }
+
+
+async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
+    razones: list[str] = []
+    riesgo_acumulado: str | None = None
+
+    # Capa 3 — Pattern Matching sobre la respuesta generada
+    resultado_patrones = escanear_texto(datos.respuesta)
+    if not resultado_patrones["safe"]:
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        razones.append(
+            f"[{resultado_patrones['categoria_owasp']}] "
+            f"{resultado_patrones['descripcion']} "
+            f"(coincidencia: '{resultado_patrones['match']}')"
+        )
+
+    # Capa 4 — Semantic Judge sobre la respuesta generada
+    resultado_juez = await analizar_con_juez(
+        "salida_chat", {"consulta": datos.consulta, "respuesta": datos.respuesta}
+    )
+    if not resultado_juez["safe"]:
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        razones.append(
+            f"LLM juez califica como {resultado_juez['qualification']}: "
+            f"{resultado_juez['explanation']}"
+        )
+
+    riesgo_final = riesgo_acumulado or "bajo"
+
+    if riesgo_final == "bajo":
+        status = "aprobado"
+    elif riesgo_final in ("medio", "alto"):
+        status = "pendiente_revision"
+    else:
+        status = "bloqueado"
+
+    return {
+        "risk_level": riesgo_final,
+        "status": status,
         "reasons": razones,
     }

@@ -11,6 +11,12 @@ class ToolCallInput(BaseModel):
     timestamp: datetime | None = None
 
 
+class EntradaSalidaChat(BaseModel):
+    consulta: str
+    respuesta: str
+    contexto_usuario_id: str | None = None
+
+
 class JudgeVerdict(BaseModel):
     qualification: Literal["Vulnerable", "Seguro"] = Field(
         description="Calificación final de seguridad de la llamada a la herramienta. "

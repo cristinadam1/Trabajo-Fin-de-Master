@@ -7,10 +7,10 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from config import settings
-from core.pipeline import evaluate_tool_call
+from core.pipeline import evaluate_tool_call, evaluar_salida_chat
 from database import Base, engine, get_db
-from models import SecurityAuditLog
-from schemas import ToolCallInput
+from models import RegistroAuditoriaChat, SecurityAuditLog
+from schemas import EntradaSalidaChat, ToolCallInput
 
 
 class ReviewRequest(BaseModel):
@@ -72,4 +72,29 @@ async def review(log_id: int, body: ReviewRequest, db: Session = Depends(get_db)
         "message": "Auditoría manual completada",
         "log_id": log_id,
         "status": log.status,
+    }
+
+
+@app.post("/v1/verificar-respuesta")
+async def verificar_respuesta(
+    datos: EntradaSalidaChat, db: Session = Depends(get_db)
+):
+    resultado = await evaluar_salida_chat(datos)
+
+    log = RegistroAuditoriaChat(
+        consulta=datos.consulta,
+        respuesta=datos.respuesta,
+        risk_level=resultado["risk_level"],
+        verdict_qualification=resultado.get("qualification", ""),
+        explanation=resultado.get("explanation"),
+        feedback=resultado.get("feedback"),
+        status=resultado["status"],
+    )
+    db.add(log)
+    db.commit()
+
+    return {
+        "risk_level": resultado["risk_level"],
+        "status": resultado["status"],
+        "reasons": resultado.get("reasons", []),
     }

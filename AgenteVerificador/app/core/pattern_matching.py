@@ -109,6 +109,90 @@ FIRMAS = [
             r"|--\s*$|;\s*DROP|' OR '1'='1"
         ),
     ),
+
+    # LLM02 — Inyección SQL automatizada (Time-based Blind, extracción carácter a carácter)
+    FirmaAtaque(
+        categoria_owasp="LLM02",
+        descripcion="Inyeccion SQL automatizada ciega (Time-based / Boolean)",
+        patron=re.compile(
+            r"(?i)(?:SLEEP|WAITFOR\s+DELAY|BENCHMARK)\s*\("
+            r"|SUBSTRING\s*\(.*?,\s*\d+,\s*1\s*\)"
+            r"|information_schema"
+            r"|ASCII\s*\(\s*SUBSTRING"
+            r"|CASE\s+WHEN.*?THEN\s+SLEEP"
+            r"|IF\s*\(.*?SLEEP"
+        ),
+    ),
+
+    # LLM06 — Phishing (suplantación, enlaces sospechosos, formularios de robo)
+    FirmaAtaque(
+        categoria_owasp="LLM06",
+        descripcion="Phishing: suplantacion de identidad corporativa",
+        patron=re.compile(
+            r"(?i)(?:estimado\s+(?:cliente|usuario)|apreciado\s+(?:cliente|usuario))"
+            r"|(?:soporte\s+técnico|departamento\s+de\s+seguridad)\s*(?:\w+\s*){0,3}(?:solicita|notifica|informa)"
+            r"|(?:haga\s+clic|click\s+aquí|verifique\s+su\s+cuenta|actualice\s+su\s+información)"
+            r"|(?:https?://(?:bit\.ly|tinyurl|shorturl|rb\.gy|ow\.ly|short\.link))"
+            r"|(?:suplantando|haciéndose\s+pasar|falsificando)"
+            r"|(?:correo\s+urgente|respuesta\s+inmediata|su\s+cuenta\s+será\s+(?:suspendida|bloqueada|cerrada))"
+        ),
+    ),
+
+    # LLM07 — Malware nativo (keylogger, hooks, API de Windows)
+    FirmaAtaque(
+        categoria_owasp="LLM07",
+        descripcion="Malware nativo: keylogger con API de Windows",
+        patron=re.compile(
+            r"(?i)(?:GetAsyncKeyState|SetWindowsHookEx|GetForegroundWindow|GetWindowText)"
+            r"|KEY_LOGGER|keylogger|KeyboardProc|WH_KEYBOARD"
+            r"|(?:WriteFile|CreateFile)\s*\(.*?[Kk]ey[Hh]ook"
+            r"|#include\s*<Windows\.h>"
+            r"|#include\s*<winuser\.h>"
+            r"|LRESULT\s+CALLBACK\s+KeyboardProc"
+        ),
+    ),
+    FirmaAtaque(
+        categoria_owasp="LLM07",
+        descripcion="Malware: persistencia, conexion inversa o descarga de payload",
+        patron=re.compile(
+            r"(?i)(?:RegSetValue|CreateService|StartService|schtasks|SC\s+CREATE)"
+            r"|(?:CreateRemoteThread|VirtualAllocEx|WriteProcessMemory)"
+            r"|(?:socket\s*\(\s*AF_INET|connect\s*\(\s*sock|WSAStartup)"
+            r"|(?:URLDownloadToFile|WebClient|DownloadString|WinHttpOpen)"
+        ),
+    ),
+
+    # LLM08 — Agencia Excesiva
+    FirmaAtaque(
+        categoria_owasp="LLM08",
+        descripcion="Suplantacion de identidad o peticiones en nombre de otro",
+        patron=re.compile(
+            r"(?i)(?:en\s+nombre\s+de|por\s+cuenta\s+de|suplantando|impersonat(?:e|ing))\s+\w+"
+            r"|Authorization:\s*Bearer\s+\S+"
+        ),
+    ),
+    FirmaAtaque(
+        categoria_owasp="LLM08",
+        descripcion="Escalada de privilegios implicita",
+        patron=re.compile(
+            r"(?i)(?:admin|root|superuser|sudo|chmod\s+777|modo\s+superusuario)"
+        ),
+    ),
+
+    # LLM06 — Divulgación de Información Sensible
+    FirmaAtaque(
+        categoria_owasp="LLM06",
+        descripcion="Filtracion de claves o tokens",
+        patron=re.compile(
+            r"(?i)(?:sk-[A-Za-z0-9]{20,}|api[_-]?key|secret|token|password|passwd)"
+            r"(?:\s*[:=]\s*['\"][A-Za-z0-9_\-]{8,}['\"])?"
+        ),
+    ),
+    FirmaAtaque(
+        categoria_owasp="LLM06",
+        descripcion="Carga util ofuscada en Base64",
+        patron=re.compile(r"[A-Za-z0-9+/]{60,}={0,2}"),
+    ),
 ]
 
 CARGA_BASE64_ALERTA = re.compile(r"[A-Za-z0-9+/]{30,}={0,2}")
@@ -159,6 +243,14 @@ def _recorrer_y_escanear(valor, memo_owasp: set):
 def escanear_argumentos(argumentos: dict) -> dict:
     memo_owasp: set = set()
     resultado = _recorrer_y_escanear(argumentos, memo_owasp)
+    if resultado:
+        return resultado
+    return {"safe": True, "risk_level": None, "categorias_owasp": list(memo_owasp)}
+
+
+def escanear_texto(texto: str) -> dict:
+    memo_owasp: set = set()
+    resultado = _recorrer_y_escanear(texto, memo_owasp)
     if resultado:
         return resultado
     return {"safe": True, "risk_level": None, "categorias_owasp": list(memo_owasp)}
