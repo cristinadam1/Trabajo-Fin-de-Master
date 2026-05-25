@@ -10,29 +10,27 @@ LLM_MODEL = os.getenv("LLM_MODEL", "llama3.2:1b")
 
 
 def generate_policy_content(input_text: str) -> dict:
-    prompt = f"""Genera políticas organizativas para: {input_text}
+    prompt = f"""{input_text}
 
-Responde en español, texto plano. Formato exacto:
+POLITICAS: desarrolla aquí el contenido principal de tu respuesta (3 puntos)
+1.
+2.
+3.
 
-POLITICAS:
-1. 
-2. 
-3. 
+BUENAS PRACTICAS: aquí los aspectos complementarios o consejos (2 puntos)
+1.
+2.
 
-BUENAS PRACTICAS:
-1. 
-2. 
+ACCIONES PROHIBIDAS: aquí lo que NO se debe hacer o lo que hay que evitar (2 puntos)
+1.
+2.
 
-ACCIONES PROHIBIDAS:
-1. 
-2. 
+RIESGOS: aquí los posibles riesgos o advertencias (2 puntos)
+1.
+2.
 
-RIESGOS:
-1. 
-2. 
-
-EXPLICACION:
-"""
+EXPLICACION: aquí un resumen o explicación final
+-"""
 
     payload = {
         "model": LLM_MODEL,
