@@ -6,11 +6,12 @@ from fastapi import HTTPException, status
 
 LLM_API_URL = os.getenv("LLM_API_URL", "http://host.docker.internal:11434/api/generate")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-LLM_MODEL = os.getenv("LLM_MODEL", "llama3.2:1b")
+LLM_MODEL = os.getenv("LLM_MODEL", "llama3.2-abliterated")
+VERIFICADOR_URL = os.getenv("VERIFICADOR_URL", "http://localhost:8000")
 
 
 def generate_policy_content(input_text: str) -> dict:
-    prompt = f"""{input_text}
+    prompt = f"""Genera políticas organizativas para: {input_text}
 
 POLITICAS: desarrolla aquí el contenido principal de tu respuesta (3 puntos)
 1.
@@ -52,6 +53,22 @@ EXPLICACION: aquí un resumen o explicación final
                 )
             data = response.json()
             content = data.get("response", "")
+
+# Verificar la respuesta con el agente de seguridad
+            try:
+                veredicto = httpx.post(
+                    f"{VERIFICADOR_URL}/v1/verificar-respuesta",
+                    json={"consulta": input_text, "respuesta": content},
+                    timeout=10.0
+                ).json()
+                if veredicto.get("status") != "aprobado":
+                    raise HTTPException(
+                        status_code=403,
+                        detail=f"Respuesta bloqueada por el agente de seguridad: {veredicto.get('reasons', [])}"
+                    )
+            except httpx.ConnectError:
+                pass
+
             return parse_llm_response(content)
     except httpx.ConnectError:
         raise HTTPException(

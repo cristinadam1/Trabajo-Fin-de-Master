@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 
 services:
   db:
@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U appuser"]
+      test: ["CMD-SHELL", "pg_isready -U cristina"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -25,13 +25,17 @@ services:
       DATABASE_URL: postgresql://cristina:cristina123@db:5432/app_politicas
       LLM_API_URL: ${LLM_API_URL:-http://host.docker.internal:11434/api/generate}
       LLM_API_KEY: ${LLM_API_KEY:-}
-      LLM_MODEL: ${LLM_MODEL:-llama3.2-abliterated:latest}
+      LLM_MODEL: ${LLM_MODEL:-llama3.2-abliterated}
+      VERIFICADOR_URL: http://guardrail-api:8000
     ports:
       - "8001:8000"
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - default
+      - guardrail_network
 
   frontend:
     build: ./frontend
@@ -43,6 +47,10 @@ services:
     environment:
       VITE_API_URL: http://localhost:8001
     restart: unless-stopped
+
+networks:
+  guardrail_network:
+    external: true
 
 volumes:
   postgres_data:
