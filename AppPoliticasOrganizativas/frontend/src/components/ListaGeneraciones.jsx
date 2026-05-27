@@ -4,7 +4,6 @@ import './ListaGeneraciones.css'
 function ListaGeneraciones({
   generaciones,
   onVerDetalles,
-  onRegenerar,
   onToggleFavorito,
   onEliminar,
 }) {
@@ -20,7 +19,6 @@ function ListaGeneraciones({
               key={gen.id}
               generacion={gen}
               onVerDetalles={onVerDetalles}
-              onRegenerar={onRegenerar}
               onToggleFavorito={onToggleFavorito}
               onEliminar={onEliminar}
             />
