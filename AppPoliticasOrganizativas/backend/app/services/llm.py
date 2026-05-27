@@ -3,11 +3,15 @@ import json
 import httpx
 from fastapi import HTTPException, status
 
+from services.cliente_portatil import AgenteVerificadorClient
+
 
 LLM_API_URL = os.getenv("LLM_API_URL", "http://host.docker.internal:11434/api/generate")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "llama3.2-abliterated")
 VERIFICADOR_URL = os.getenv("VERIFICADOR_URL", "http://localhost:8000")
+
+verificador = AgenteVerificadorClient(VERIFICADOR_URL)
 
 
 def generate_policy_content(input_text: str) -> dict:
@@ -54,20 +58,32 @@ EXPLICACION: aquí un resumen o explicación final
             data = response.json()
             content = data.get("response", "")
 
-# Verificar la respuesta con el agente de seguridad
+# Verificar la respuesta con el agente de seguridad (cliente portátil)
             try:
-                veredicto = httpx.post(
-                    f"{VERIFICADOR_URL}/v1/verificar-respuesta",
-                    json={"consulta": input_text, "respuesta": content},
-                    timeout=10.0
-                ).json()
-                if veredicto.get("status") != "aprobado":
+                resultado = verificador.verificar_respuesta(input_text, content)
+
+                if resultado["status"] == "aprobado":
+                    pass  # Seguro, continuar
+
+                elif resultado["status"] == "pendiente_revision":
+                    # Esperar a que un humano revise (máx 5 minutos)
+                    resultado_final = verificador.esperar_revision(
+                        resultado["log_id"], tipo="chat", timeout=300
+                    )
+                    if resultado_final["status"] != "aprobado":
+                        raise HTTPException(
+                            status_code=403,
+                            detail=f"Respuesta bloqueada tras revisión humana: {resultado_final.get('reasons', '')}"
+                        )
+
+                else:
                     raise HTTPException(
                         status_code=403,
-                        detail=f"Respuesta bloqueada por el agente de seguridad: {veredicto.get('reasons', [])}"
+                        detail=f"Respuesta bloqueada por el agente de seguridad: {resultado.get('reasons', [])}"
                     )
+
             except httpx.ConnectError:
-                pass
+                pass  # Si el agente no está disponible, continuar sin verificar
 
             return parse_llm_response(content)
     except httpx.ConnectError:
