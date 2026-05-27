@@ -5,13 +5,14 @@ os.environ["LLM_API_KEY"] = "sk-test-mocked"
 
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "app"))
+
 from unittest.mock import MagicMock, patch
 import pytest
 from fastapi.testclient import TestClient
 from database import get_db
 from main import app
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "app"))
 
 # mock de db
 

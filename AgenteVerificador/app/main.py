@@ -59,6 +59,28 @@ async def verify(datos: ToolCallInput, db: Session = Depends(get_db)):
     }
 
 
+@app.get("/v1/pending")
+async def listar_pendientes(db: Session = Depends(get_db)):
+    logs = (
+        db.query(SecurityAuditLog)
+        .filter(SecurityAuditLog.status == "pendiente_revision")
+        .order_by(SecurityAuditLog.created_at.desc())
+        .limit(50)
+        .all()
+    )
+    return [
+        {
+            "id": log.id,
+            "tool_name": log.tool_name,
+            "arguments": log.arguments,
+            "risk_level": log.risk_level,
+            "reasons": log.explanation,
+            "created_at": log.created_at.isoformat(),
+        }
+        for log in logs
+    ]
+
+
 @app.post("/v1/review/{log_id}")
 async def review(log_id: int, body: ReviewRequest, db: Session = Depends(get_db)):
     log = db.query(SecurityAuditLog).filter(SecurityAuditLog.id == log_id).first()

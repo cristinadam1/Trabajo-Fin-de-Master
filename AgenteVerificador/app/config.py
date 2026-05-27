@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Agente Verificador de Seguridad"
     DATABASE_URL: str
     LLM_API_KEY: str
-    LLM_MODEL_NAME: str = "meta-llama/Llama-Guard-3"
+    LLM_MODEL_NAME: str = "llama-guard3:1b"
 
 
 settings = Settings()

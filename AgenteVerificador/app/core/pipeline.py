@@ -24,7 +24,9 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
     razones: list[str] = []
     riesgo_acumulado: str | None = None
 
-    # Capa 1 — Allowlist
+    resultado_juez: dict[str, Any] | None = None
+
+    # Capa 1 = Allowlist (rápida, cortocircuito si es conocida)
     resultado_allowlist = check_allowlist(datos.tool_name)
     if resultado_allowlist["allowed"]:
         return {
@@ -32,18 +34,12 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
             "status": "aprobado",
             "tool_name": datos.tool_name,
             "reasons": ["Herramienta en lista blanca de seguridad."],
+            "qualification": "",
+            "explanation": None,
+            "feedback": None,
         }
 
-    # Capa 2 — Semantic Judge (análisis semántico con LLM)
-    resultado_juez = await analizar_con_juez(datos.tool_name, datos.arguments)
-    if not resultado_juez["safe"]:
-        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
-        razones.append(
-            f"LLM juez califica como {resultado_juez['qualification']}: "
-            f"{resultado_juez['explanation']}"
-        )
-
-    # Capa 3 — Pattern Matching
+    # Capa 2 = Pattern Matching (rápida, regex sobre argumentos)
     resultado_patrones = escanear_argumentos(datos.arguments)
     if not resultado_patrones["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
@@ -53,7 +49,7 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
             f"(coincidencia: '{resultado_patrones['match']}')"
         )
 
-    # Capa 4 — Sandbox Guard
+    # Capa 3 = Sandbox Guard (rutas, path traversal)
     resultado_sandbox = inspect_arguments(datos.arguments)
     if not resultado_sandbox["safe"]:
         razones.append(resultado_sandbox["reason"])
@@ -62,7 +58,19 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
             "status": "bloqueado",
             "tool_name": datos.tool_name,
             "reasons": razones,
+            "qualification": "",
+            "explanation": None,
+            "feedback": None,
         }
+
+    # Capa 4 = Semantic Judge (lenta, LLM, solo si las rápidas no rechazaron)
+    resultado_juez = await analizar_con_juez(datos.tool_name, datos.arguments)
+    if not resultado_juez["safe"]:
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        razones.append(
+            f"LLM juez califica como {resultado_juez['qualification']}: "
+            f"{resultado_juez['explanation']}"
+        )
 
     # Consolidación final
     riesgo_final = riesgo_acumulado or "bajo"
@@ -79,6 +87,9 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
         "status": status,
         "tool_name": datos.tool_name,
         "reasons": razones,
+        "qualification": resultado_juez.get("qualification", "") if resultado_juez else "",
+        "explanation": resultado_juez.get("explanation") if resultado_juez else None,
+        "feedback": resultado_juez.get("feedback") if resultado_juez else None,
     }
 
 
@@ -86,7 +97,7 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     razones: list[str] = []
     riesgo_acumulado: str | None = None
 
-    # Capa 3 — Pattern Matching sobre la respuesta generada
+    # Capa 3 = Pattern Matching sobre la respuesta generada
     resultado_patrones = escanear_texto(datos.respuesta)
     if not resultado_patrones["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
@@ -96,7 +107,7 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
             f"(coincidencia: '{resultado_patrones['match']}')"
         )
 
-    # Capa 4 — Semantic Judge sobre la respuesta generada
+    # Capa 4 = Semantic Judge sobre la respuesta generada
     resultado_juez = await analizar_con_juez(
         "salida_chat", {"consulta": datos.consulta, "respuesta": datos.respuesta}
     )
@@ -119,5 +130,8 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     return {
         "risk_level": riesgo_final,
         "status": status,
+        "qualification": resultado_juez.get("qualification", ""),
+        "explanation": resultado_juez.get("explanation"),
+        "feedback": resultado_juez.get("feedback"),
         "reasons": razones,
     }

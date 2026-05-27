@@ -72,7 +72,7 @@ jobs:
           python -m py_compile app/core/*.py
           python -m py_compile tests/*.py
 
-      - name: Ejecutar batería de pruebas (Red Teaming)
+      - name: Ejecutar batería de pruebas (red teaming)
         working-directory: ./AgenteVerificador
         env:
           DATABASE_URL: sqlite:///test.db

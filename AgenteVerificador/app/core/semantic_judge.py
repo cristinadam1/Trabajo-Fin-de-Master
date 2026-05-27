@@ -39,7 +39,10 @@ PLANTILLA_CONVERSACION = (
 
 
 async def analizar_con_juez(nombre_herramienta: str, argumentos: dict) -> dict:
-    cliente = AsyncOpenAI(api_key=settings.LLM_API_KEY)
+    cliente = AsyncOpenAI(
+        api_key=settings.LLM_API_KEY,
+        base_url="http://host.docker.internal:11434/v1",
+    )
 
     prompt = PLANTILLA_CONVERSACION.format(
         taxonomia=TAXONOMIA_LLAMA_GUARD,
@@ -73,8 +76,7 @@ async def analizar_con_juez(nombre_herramienta: str, argumentos: dict) -> dict:
             ),
             "feedback": (
                 "Revisar disponibilidad del proveedor LLM y credenciales. "
-                "La petición fue bloqueada por precaución ante una falla de "
-                "comunicación con el modelo evaluador."
+                "La petición fue bloqueada por precaución ante una falla de comunicación con el modelo evaluador."
             ),
         }
 

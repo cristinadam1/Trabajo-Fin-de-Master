@@ -12,14 +12,14 @@ class FirmaAtaque:
 
 FIRMAS = [
 
-    # LLM01 — Inyección de Prompt
+    # LLM01 = Inyección de Prompt
     FirmaAtaque(
         categoria_owasp="LLM01",
         descripcion="Inyeccion de prompt con saltos de contexto",
         patron=re.compile(
             r"(?i)(?:ignorar|omite|olvida|desoye|sobrescribe)\s+(?:las\s+)?(?:instrucciones?|indicaciones?|prompt|contexto)"
             r"|(?:nuevas?\s+)?instrucciones?\s*(?::|son)\s*:"
-            r"|system\s*(?::|prompt)\s*:.{0,50}(?:di|actua|comportate)"
+            r"|system\s*:.*?(?:di|act[úu]a|comportate|ignora|olvida|omite|instrucciones)"
             r"|simula\s+ser|finge\s+ser|pretende\s+ser"
             r"|DAN\b|do.anything.now|jailbreak"
         ),
@@ -32,7 +32,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM07 — Diseño Inseguro de Plugins (tool calls maliciosas)
+    # LLM07 = Diseño inseguro de Plugins (tool calls maliciosas)
     FirmaAtaque(
         categoria_owasp="LLM07",
         descripcion="Ejecucion dinamica de codigo Python",
@@ -65,7 +65,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM08 — Agencia Excesiva
+    # LLM08 = Agencia excesiva
     FirmaAtaque(
         categoria_owasp="LLM08",
         descripcion="Suplantacion de identidad o peticiones en nombre de otro",
@@ -82,7 +82,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM06 — Divulgación de Información Sensible
+    # LLM06 = Divulgación de información sensible
     FirmaAtaque(
         categoria_owasp="LLM06",
         descripcion="Filtracion de claves o tokens",
@@ -97,7 +97,7 @@ FIRMAS = [
         patron=re.compile(r"[A-Za-z0-9+/]{60,}={0,2}"),
     ),
 
-    # LLM02 — Inyección SQL (Tratamiento Inseguro de Salidas)
+    # LLM02 = Inyección SQL (tratamiento inseguro de salidas)
     FirmaAtaque(
         categoria_owasp="LLM02",
         descripcion="Inyeccion SQL clasica",
@@ -110,7 +110,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM02 — Inyección SQL automatizada (Time-based Blind, extracción carácter a carácter)
+    # LLM02 = Inyección SQL automatizada (Time-based Blind, extracción carácter a carácter)
     FirmaAtaque(
         categoria_owasp="LLM02",
         descripcion="Inyeccion SQL automatizada ciega (Time-based / Boolean)",
@@ -124,7 +124,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM06 — Phishing (suplantación, enlaces sospechosos, formularios de robo)
+    # LLM06 = Phishing (suplantación, enlaces sospechosos, formularios de robo)
     FirmaAtaque(
         categoria_owasp="LLM06",
         descripcion="Phishing: suplantacion de identidad corporativa",
@@ -138,7 +138,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM07 — Malware nativo (keylogger, hooks, API de Windows)
+    # LLM07 = Malware nativo (keylogger, hooks, API de Windows)
     FirmaAtaque(
         categoria_owasp="LLM07",
         descripcion="Malware nativo: keylogger con API de Windows",
@@ -162,7 +162,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM08 — Agencia Excesiva
+    # LLM08 = Agencia excesiva
     FirmaAtaque(
         categoria_owasp="LLM08",
         descripcion="Suplantacion de identidad o peticiones en nombre de otro",
@@ -179,7 +179,7 @@ FIRMAS = [
         ),
     ),
 
-    # LLM06 — Divulgación de Información Sensible
+    # LLM06 = Divulgación de información sensible
     FirmaAtaque(
         categoria_owasp="LLM06",
         descripcion="Filtracion de claves o tokens",

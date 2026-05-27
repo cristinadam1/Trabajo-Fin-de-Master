@@ -17,8 +17,6 @@ SENSITIVE_PATTERNS = frozenset({
     "system32",
     "cmd.exe",
     "powershell.exe",
-    "bash",
-    "sh",
 })
 
 
