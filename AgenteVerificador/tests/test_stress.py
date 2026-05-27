@@ -1,18 +1,17 @@
 import os
+
+os.environ["DATABASE_URL"] = "sqlite:///test.db"
+os.environ["LLM_API_KEY"] = "sk-test-mocked"
+
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
 import pytest
 from fastapi.testclient import TestClient
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "app"))
-
-os.environ.setdefault("DATABASE_URL", "sqlite:///test.db")
-os.environ.setdefault("LLM_API_KEY", "sk-test-mocked")
-
 from database import get_db
 from main import app
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "app"))
 
 # mock de db
 
@@ -176,16 +175,14 @@ DATASET_ATAQUES = [
 # tests parametrizados 
 
 @pytest.mark.parametrize("caso", DATASET_ATAQUES)
-@patch("core.semantic_judge.analizar_con_juez")
+@patch("core.pipeline.analizar_con_juez")
 def test_seguridad_red_team(mock_juez, caso):
     mock_juez.return_value = {
-        "safe": False,
-        "risk_level": "alto",
-        "qualification": "Vulnerable",
-        "explanation": (
-            "Simulación: el LLM juez ha detectado anomalías en la petición."
-        ),
-        "feedback": "Simulación: bloquear y registrar el incidente.",
+        "safe": True,
+        "risk_level": None,
+        "qualification": "Seguro",
+        "explanation": "Simulación: el LLM juez no detecta anomalías.",
+        "feedback": "Simulación: continuar con la ejecución.",
     }
 
     cliente = TestClient(app)
