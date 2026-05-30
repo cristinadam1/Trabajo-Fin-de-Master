@@ -1,9 +1,7 @@
+from config import settings
+
 ALLOWED_TOOLS = frozenset(
-    {
-        "read_current_time",
-        "get_weather_info",
-        "view_documentation",
-    }
+    tool.strip() for tool in settings.ALLOWED_TOOLS.split(",") if tool.strip()
 )
 
 
