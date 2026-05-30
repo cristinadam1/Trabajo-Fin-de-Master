@@ -184,6 +184,7 @@ def test_seguridad_red_team(mock_juez, caso):
         "qualification": "Seguro",
         "explanation": "Simulación: el LLM juez no detecta anomalías.",
         "feedback": "Simulación: continuar con la ejecución.",
+        "raw_response": "safe",
     }
 
     cliente = TestClient(app)
