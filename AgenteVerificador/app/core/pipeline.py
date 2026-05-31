@@ -20,6 +20,34 @@ def _maximo_riesgo(*riesgos: str | None) -> str | None:
     return niveles[-1]
 
 
+def _generar_justificacion(
+    riesgo_final: str,
+    razones: list[str],
+    resultado_juez: dict[str, Any] | None,
+) -> str:
+    partes: list[str] = ["🔍 Detecciones por capa:"]
+    for r in razones:
+        partes.append(f"  • {r}")
+    if resultado_juez:
+        v = resultado_juez
+        juez_texto = "Seguro ✅" if v.get("safe") else "Inseguro ❌"
+        partes.append(
+            f"  • Juez semántico: {juez_texto} "
+            f"(cualificación: {v.get('qualification', 'N/A')})"
+        )
+        if v.get("explanation"):
+            partes.append(f"   Explicación del juez: {v['explanation']}")
+    riesgo_nombre = {"bajo": "Bajo ✅", "medio": "Medio ⚠️", "alto": "Alto 🚨", "critico": "Crítico 🛑"}
+    partes.append(f"  • Riesgo final: {riesgo_nombre.get(riesgo_final, riesgo_final)}")
+    if riesgo_final in ("alto", "critico"):
+        partes.append("   Requiere revisión humana antes de continuar.")
+    elif riesgo_final == "medio":
+        partes.append("   Se recomienda revisión humana.")
+    else:
+        partes.append("   Sin riesgos detectados. Ejecución automática.")
+    return "\n".join(partes)
+
+
 async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
     razones: list[str] = []
     riesgo_acumulado: str | None = None
@@ -59,7 +87,7 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
             "tool_name": datos.tool_name,
             "reasons": razones,
             "qualification": "",
-            "explanation": None,
+            "explanation": _generar_justificacion("critico", razones, None),
             "feedback": None,
         }
 
@@ -67,10 +95,6 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
     resultado_juez = await analizar_con_juez(datos.tool_name, datos.arguments)
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
-        razones.append(
-            f"LLM juez califica como {resultado_juez['qualification']}: "
-            f"{resultado_juez['explanation']}"
-        )
 
     # Consolidación final
     riesgo_final = riesgo_acumulado or "bajo"
@@ -88,8 +112,9 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
         "tool_name": datos.tool_name,
         "reasons": razones,
         "qualification": resultado_juez.get("qualification", "") if resultado_juez else "",
-        "explanation": resultado_juez.get("explanation") if resultado_juez else None,
+        "explanation": _generar_justificacion(riesgo_final, razones, resultado_juez),
         "feedback": resultado_juez.get("feedback") if resultado_juez else None,
+        "raw_response": resultado_juez.get("raw_response") if resultado_juez else None,
     }
 
 
@@ -113,10 +138,6 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     )
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
-        razones.append(
-            f"LLM juez califica como {resultado_juez['qualification']}: "
-            f"{resultado_juez['explanation']}"
-        )
 
     riesgo_final = riesgo_acumulado or "bajo"
 
@@ -131,7 +152,8 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
         "risk_level": riesgo_final,
         "status": status,
         "qualification": resultado_juez.get("qualification", ""),
-        "explanation": resultado_juez.get("explanation"),
+        "explanation": _generar_justificacion(riesgo_final, razones, resultado_juez),
         "feedback": resultado_juez.get("feedback"),
+        "raw_response": resultado_juez.get("raw_response"),
         "reasons": razones,
     }
