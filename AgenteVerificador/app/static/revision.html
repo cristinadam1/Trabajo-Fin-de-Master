@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agente Verificador - Revisiones Pendientes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; padding: 2rem; color: #333; }
+  h1 { margin-bottom: 1.5rem; font-size: 1.5rem; }
+  .tabla { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .tabla th { background: #1a1a2e; color: #fff; padding: 0.75rem 1rem; text-align: left; font-weight: 600; font-size: 0.85rem; }
+  .tabla td { padding: 0.75rem 1rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+  .tabla tr:hover { background: #f0f0ff; }
+  .vacio { text-align: center; padding: 2rem; color: #999; }
+  .riesgo-alto { color: #e67e22; font-weight: 600; }
+  .riesgo-critico { color: #e74c3c; font-weight: 600; }
+  .riesgo-bajo { color: #27ae60; }
+  .acciones { display: flex; gap: 0.5rem; }
+  .btn { padding: 0.4rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 500; }
+  .btn-aprobar { background: #27ae60; color: #fff; }
+  .btn-aprobar:hover { background: #219a52; }
+  .btn-bloquear { background: #e74c3c; color: #fff; }
+  .btn-bloquear:hover { background: #c0392b; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+  .modal.visible { display: flex; }
+  .modal-content { background: #fff; border-radius: 8px; padding: 2rem; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; }
+  .modal-content h2 { margin-bottom: 1rem; }
+  .modal-content pre { background: #f8f8f8; border: 1px solid #ddd; border-radius: 4px; padding: 1rem; font-size: 0.85rem; overflow-x: auto; margin: 0.5rem 0 1rem; }
+  .modal-content .campo { font-weight: 600; margin-top: 0.75rem; }
+  .cerrar { float: right; cursor: pointer; font-size: 1.5rem; color: #999; }
+  .cerrar:hover { color: #333; }
+  .mensaje { display: none; padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; }
+  .mensaje.ok { display: block; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .mensaje.error { display: block; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  .refresh { margin-bottom: 1rem; padding: 0.5rem 1rem; background: #1a1a2e; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+  .refresh:hover { background: #2d2d5e; }
+</style>
+</head>
+<body>
+  <h1>🔍 Revisiones Pendientes</h1>
+  <div id="mensaje" class="mensaje"></div>
+  <button class="refresh" onclick="cargar()">↻ Recargar</button>
+  <table class="tabla">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Nombre</th>
+        <th>Riesgo</th>
+        <th>Creado</th>
+        <th>Detalle</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody id="lista"></tbody>
+  </table>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="cerrar" onclick="cerrarModal()">&times;</span>
+      <h2 id="modal-titulo">Detalle</h2>
+      <div class="campo">Herramienta:</div>
+      <pre id="modal-herramienta"></pre>
+      <div class="campo">Argumentos:</div>
+      <pre id="modal-argumentos"></pre>
+      <div class="campo">Justificación del riesgo:</div>
+      <pre id="modal-razon"></pre>
+      <div class="campo">Veredicto del juez:</div>
+      <pre id="modal-veredicto"></pre>
+      <div class="campo">Feedback:</div>
+      <pre id="modal-feedback"></pre>
+      <div class="campo">Razonamiento del juez (raw):</div>
+      <pre id="modal-raw" style="white-space:pre-wrap;background:#f0f0f0;border:1px solid #ccc;"></pre>
+    </div>
+  </div>
+
+<script>
+async function cargar() {
+  const tbody = document.getElementById('lista');
+    tbody.innerHTML = '<tr><td colspan="7" class="vacio">Cargando...</td></tr>';
+
+  try {
+    const res = await fetch('/v1/pending');
+    const logs = await res.json();
+
+    if (logs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="vacio">No hay peticiones pendientes</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = logs.map(log => {
+      const riesgoClase = `riesgo-${log.risk_level}`;
+      const fecha = new Date(log.created_at).toLocaleString('es-ES');
+      const tipoEtiqueta = log.tipo === 'chat' ? '💬 Chat' : '🔧 Tool';
+      return `<tr>
+        <td>${log.id}</td>
+        <td>${tipoEtiqueta}</td>
+        <td>${log.nombre}</td>
+        <td class="${riesgoClase}">${log.risk_level}</td>
+        <td>${fecha}</td>
+        <td><button class="btn" style="background:#ddd" onclick='verDetalle(${JSON.stringify(log).replace(/'/g,"&#39;")})'>Ver</button></td>
+        <td class="acciones">
+          <button class="btn btn-aprobar" onclick="revisar(${log.id},'${log.tipo}','aprobado')">✓ Aprobar</button>
+          <button class="btn btn-bloquear" onclick="revisar(${log.id},'${log.tipo}','bloqueado')">✗ Bloquear</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6" class="vacio">Error al cargar: ${e.message}</td></tr>`;
+  }
+}
+
+function verDetalle(log) {
+  const riesgoEmoji = {bajo: '✅', medio: '⚠️', alto: '🚨', critico: '🛑'};
+  document.getElementById('modal-titulo').textContent =
+    `Detalle - Log #${log.id} (${log.tipo === 'chat' ? 'Chat' : 'Tool call'}) — Riesgo: ${riesgoEmoji[log.risk_level] || ''} ${log.risk_level}`;
+  document.getElementById('modal-herramienta').textContent = log.nombre;
+  document.getElementById('modal-argumentos').textContent = JSON.stringify(log.argumentos, null, 2);
+  document.getElementById('modal-razon').textContent = log.reasons || 'N/A';
+  document.getElementById('modal-veredicto').textContent = log.verdict_qualification || 'N/A';
+  document.getElementById('modal-feedback').textContent = log.feedback || 'N/A';
+  document.getElementById('modal-raw').textContent = log.raw_response || 'N/A';
+  document.getElementById('modal').classList.add('visible');
+}
+
+function cerrarModal() {
+  document.getElementById('modal').classList.remove('visible');
+}
+
+async function revisar(id, tipo, decision) {
+  const mensaje = document.getElementById('mensaje');
+  mensaje.className = 'mensaje';
+  mensaje.textContent = 'Procesando...';
+
+  try {
+    const res = await fetch(`/v1/review/${id}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({decision, tipo})
+    });
+
+    if (res.ok) {
+      mensaje.className = 'mensaje ok';
+      if (tipo === 'chat' && decision === 'aprobado') {
+        mensaje.innerHTML = `✓ Log #${id} APROBADO<br><br>
+          Para ver la respuesta completa:<br>
+          <code style="background:#eee;padding:2px 6px;border-radius:3px;font-size:0.85rem">
+            docker exec guardrail-db psql -U guardrail -d guardrail_db -t -A -c "SELECT consulta, respuesta FROM chat_audit_logs WHERE id = ${id};" | less
+          </code>`;
+      } else if (tipo === 'tool' && decision === 'aprobado') {
+        mensaje.innerHTML = `✓ Log #${id} APROBADO<br><br>
+          Para ver los argumentos:<br>
+          <code style="background:#eee;padding:2px 6px;border-radius:3px;font-size:0.85rem">
+            docker exec guardrail-db psql -U guardrail -d guardrail_db -t -A -c "SELECT tool_name, arguments FROM security_audit_logs WHERE id = ${id};" | less
+          </code>`;
+      } else {
+        mensaje.textContent = `✓ Log #${id} ${decision === 'aprobado' ? 'APROBADO' : 'BLOQUEADO'}`;
+      }
+      cargar();
+    } else {
+      const err = await res.json();
+      mensaje.className = 'mensaje error';
+      mensaje.textContent = `✗ Error: ${err.detail || 'Error desconocido'}`;
+    }
+  } catch(e) {
+    mensaje.className = 'mensaje error';
+    mensaje.textContent = `✗ Error de conexión: ${e.message}`;
+  }
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) cerrarModal();
+});
+
+cargar();
+</script>
+</body>
+</html>
