@@ -15,6 +15,7 @@ class SecurityAuditLog(Base):
     verdict_qualification = Column(String, nullable=False)
     explanation = Column(Text, nullable=True)
     feedback = Column(Text, nullable=True)
+    raw_response = Column(Text, nullable=True)
     status = Column(String, nullable=False)
     created_at = Column(
         DateTime(timezone=True),
@@ -33,6 +34,7 @@ class RegistroAuditoriaChat(Base):
     verdict_qualification = Column(String, nullable=False)
     explanation = Column(Text, nullable=True)
     feedback = Column(Text, nullable=True)
+    raw_response = Column(Text, nullable=True)
     status = Column(String, nullable=False)
     created_at = Column(
         DateTime(timezone=True),
