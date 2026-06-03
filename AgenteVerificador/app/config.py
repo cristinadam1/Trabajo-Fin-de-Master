@@ -10,7 +10,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Agente Verificador de Seguridad"
     DATABASE_URL: str
     LLM_API_KEY: str
-    LLM_BASE_URL: str = "http://host.docker.internal:11434/v1"
     LLM_MODEL_NAME: str = "llama-guard3:1b"
     ALLOWED_TOOLS: str = "read_current_time,get_weather_info,view_documentation"
 

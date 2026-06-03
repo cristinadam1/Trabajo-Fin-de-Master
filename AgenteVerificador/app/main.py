@@ -30,7 +30,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
 
 RUTA_ESTATICA = Path(__file__).resolve().parent / "static"
-RUTA_ESTATICA.mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(RUTA_ESTATICA)), name="static")
 
 
