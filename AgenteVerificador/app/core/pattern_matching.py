@@ -17,11 +17,11 @@ FIRMAS = [
         categoria_owasp="LLM01",
         descripcion="Inyeccion de prompt con saltos de contexto",
         patron=re.compile(
-            r"(?i)(?:ignorar|omite|olvida|desoye|sobrescribe)\s+(?:las\s+)?(?:instrucciones?|indicaciones?|prompt|contexto)"
-            r"|(?:nuevas?\s+)?instrucciones?\s*(?::|son)\s*:"
-            r"|system\s*:.*?(?:di|act[úu]a|comportate|ignora|olvida|omite|instrucciones)"
-            r"|simula\s+ser|finge\s+ser|pretende\s+ser"
-            r"|DAN\b|do.anything.now|jailbreak"
+            r"(?i:(?:ignorar|omite|olvida|desoye|sobrescribe)\s+(?:las\s+)?(?:instrucciones?|indicaciones?|prompt|contexto))"
+            r"|(?i:(?:nuevas?\s+)?instrucciones?\s*(?::|son)\s*:)"
+            r"|(?i:system\s*:.*?(?:di|act[úu]a|comportate|ignora|olvida|omite|instrucciones))"
+            r"|(?i:simula\s+ser|finge\s+ser|pretende\s+ser)"
+            r"|\bDAN\b|(?i:do\.anything\.now)|(?i:jailbreak)"
         ),
     ),
     FirmaAtaque(
