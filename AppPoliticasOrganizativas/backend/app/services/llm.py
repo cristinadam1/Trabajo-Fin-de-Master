@@ -44,7 +44,7 @@ EXPLICACION: aquí un resumen o explicación final
         headers["Authorization"] = f"Bearer {LLM_API_KEY}"
 
     try:
-        with httpx.Client(timeout=120.0) as client:
+        with httpx.Client(timeout=300.0) as client:
             response = client.post(LLM_API_URL, json=payload, headers=headers)
             if response.status_code != 200:
                 raise HTTPException(
