@@ -43,7 +43,7 @@ PLANTILLA_CONVERSACION = (
 async def analizar_con_juez(nombre_herramienta: str, argumentos: dict) -> dict:
     cliente = AsyncOpenAI(
         api_key=settings.LLM_API_KEY,
-        base_url=settings.LLM_BASE_URL,
+        base_url="http://host.docker.internal:11434/v1",
     )
 
     prompt = PLANTILLA_CONVERSACION.format(

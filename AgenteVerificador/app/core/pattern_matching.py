@@ -17,11 +17,11 @@ FIRMAS = [
         categoria_owasp="LLM01",
         descripcion="Inyeccion de prompt con saltos de contexto",
         patron=re.compile(
-            r"(?i:(?:ignorar|omite|olvida|desoye|sobrescribe)\s+(?:las\s+)?(?:instrucciones?|indicaciones?|prompt|contexto))"
-            r"|(?i:(?:nuevas?\s+)?instrucciones?\s*(?::|son)\s*:)"
-            r"|(?i:system\s*:.*?(?:di|act[úu]a|comportate|ignora|olvida|omite|instrucciones))"
-            r"|(?i:simula\s+ser|finge\s+ser|pretende\s+ser)"
-            r"|\bDAN\b|(?i:do\.anything\.now)|(?i:jailbreak)"
+            r"(?i)(?:ignorar|omite|olvida|desoye|sobrescribe)\s+(?:las\s+)?(?:instrucciones?|indicaciones?|prompt|contexto)"
+            r"|(?:nuevas?\s+)?instrucciones?\s*(?::|son)\s*:"
+            r"|system\s*:.*?(?:di|act[úu]a|comportate|ignora|olvida|omite|instrucciones)"
+            r"|simula\s+ser|finge\s+ser|pretende\s+ser"
+            r"|DAN\b|do.anything.now|jailbreak"
         ),
     ),
     FirmaAtaque(
@@ -78,7 +78,7 @@ FIRMAS = [
         categoria_owasp="LLM08",
         descripcion="Escalada de privilegios implicita",
         patron=re.compile(
-            r"(?i)(?:\badmin\b|root|superuser|sudo|chmod\s+777|modo\s+superusuario)"
+            r"(?i)(?:admin|root|superuser|sudo|chmod\s+777|modo\s+superusuario)"
         ),
     ),
 
@@ -160,6 +160,38 @@ FIRMAS = [
             r"|(?:socket\s*\(\s*AF_INET|connect\s*\(\s*sock|WSAStartup)"
             r"|(?:URLDownloadToFile|WebClient|DownloadString|WinHttpOpen)"
         ),
+    ),
+
+    # LLM08 = Agencia excesiva
+    FirmaAtaque(
+        categoria_owasp="LLM08",
+        descripcion="Suplantacion de identidad o peticiones en nombre de otro",
+        patron=re.compile(
+            r"(?i)(?:en\s+nombre\s+de|por\s+cuenta\s+de|suplantando|impersonat(?:e|ing))\s+\w+"
+            r"|Authorization:\s*Bearer\s+\S+"
+        ),
+    ),
+    FirmaAtaque(
+        categoria_owasp="LLM08",
+        descripcion="Escalada de privilegios implicita",
+        patron=re.compile(
+            r"(?i)(?:admin|root|superuser|sudo|chmod\s+777|modo\s+superusuario)"
+        ),
+    ),
+
+    # LLM06 = Divulgación de información sensible
+    FirmaAtaque(
+        categoria_owasp="LLM06",
+        descripcion="Filtracion de claves o tokens",
+        patron=re.compile(
+            r"(?i)(?:sk-[A-Za-z0-9]{20,}|api[_-]?key|secret|token|password|passwd)"
+            r"(?:\s*[:=]\s*['\"][A-Za-z0-9_\-]{8,}['\"])?"
+        ),
+    ),
+    FirmaAtaque(
+        categoria_owasp="LLM06",
+        descripcion="Carga util ofuscada en Base64",
+        patron=re.compile(r"[A-Za-z0-9+/]{60,}={0,2}"),
     ),
 ]
 

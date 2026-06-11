@@ -54,9 +54,9 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
 
     resultado_juez: dict[str, Any] | None = None
 
-    # Capa 1 = Allowlist (rápida, cortocircuito si es conocida)
-    resultado_allowlist = check_allowlist(datos.tool_name)
-    if resultado_allowlist["allowed"]:
+    # Capa 1 = Allowlist (rápida, cortocircuito si es conocida y no apunta a rutas sensibles)
+    resultado_allowlist = check_allowlist(datos.tool_name, datos.arguments)
+    if resultado_allowlist["skip_next_layers"]:
         return {
             "risk_level": "bajo",
             "status": "aprobado",
