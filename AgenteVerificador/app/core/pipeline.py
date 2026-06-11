@@ -70,11 +70,12 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
     # Capa 2 = Pattern Matching (rápida, regex sobre argumentos)
     resultado_patrones = escanear_argumentos(datos.arguments)
     if not resultado_patrones["safe"]:
-        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        riesgo_patron = resultado_patrones.get("risk_level", "alto")
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, riesgo_patron)
         razones.append(
-            f"[{resultado_patrones['categoria_owasp']}] "
+            f"[{resultado_patrones['categoria']}] "
             f"{resultado_patrones['descripcion']} "
-            f"(coincidencia: '{resultado_patrones['match']}')"
+            f"(riesgo: {riesgo_patron}, coincidencia: '{resultado_patrones['match']}')"
         )
 
     # Capa 3 = Sandbox Guard (rutas, path traversal)
@@ -125,11 +126,12 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     # Capa 3 = Pattern Matching sobre la respuesta generada
     resultado_patrones = escanear_texto(datos.respuesta)
     if not resultado_patrones["safe"]:
-        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        riesgo_patron = resultado_patrones.get("risk_level", "alto")
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, riesgo_patron)
         razones.append(
-            f"[{resultado_patrones['categoria_owasp']}] "
+            f"[{resultado_patrones['categoria']}] "
             f"{resultado_patrones['descripcion']} "
-            f"(coincidencia: '{resultado_patrones['match']}')"
+            f"(riesgo: {riesgo_patron}, coincidencia: '{resultado_patrones['match']}')"
         )
 
     # Capa 4 = Semantic Judge sobre la respuesta generada
