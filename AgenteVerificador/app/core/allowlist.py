@@ -6,16 +6,12 @@ ALLOWED_TOOLS = frozenset(
 )
 
 RUTAS_SENSIBLES = frozenset({
-    "/etc/passwd", "/etc/shadow", "/etc/",
-    "/var/log", "/var/",
-    "/root/", "/sys/", "/proc/", "/boot/",
-    "/usr/bin/", "/usr/lib/",
-    ".ssh", "id_rsa", "id_ed25519",
-    "authorized_keys", "known_hosts", ".pgpass",
-    ".aws/credentials", ".azure/", ".gcloud/",
-    "../", "..\\",
-    ".bash_history", ".zsh_history",
-    "~/.bash_history", "~/.zsh_history",
+    "../", "/etc/passwd", "/etc/shadow", "/etc/hosts", "/etc/sudoers",
+    ".ssh/", "~/.ssh/id_rsa", "~/.ssh/id_ed25519",
+    ".git/config", "~/.bashrc", ".test-env", ".env",
+    "/var/log/system.log", "/proc/1/cgroup", "/.dockerenv",
+    "/home/", "/tmp/",
+    "/dev/tcp", "nc -e", "base64 -d", "bytes.fromhex",
 })
 
 
