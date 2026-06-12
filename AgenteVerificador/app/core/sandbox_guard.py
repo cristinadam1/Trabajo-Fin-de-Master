@@ -1,64 +1,28 @@
-from pathlib import PurePath, PurePosixPath, PureWindowsPath
+from pathlib import Path
+
+from config import settings
+
+WORKSPACE_DIR = Path(settings.WORKSPACE_DIR).resolve()
 
 SENSITIVE_PATTERNS = frozenset({
-    "/etc/",
-    "/var/",
-    "/root/",
-    "/sys/",
-    "/proc/",
-    "/boot/",
-    "/usr/bin/",
-    "/usr/lib/",
-    "/usr/share/",
-    "/windows/",
-    "/winnt/",
-    "\\windows\\",
-    "\\winnt\\",
-    "system32",
-    "cmd.exe",
-    "powershell.exe",
+    "/etc/", "/var/", "/root/", "/sys/", "/proc/", "/boot/",
+    "/usr/bin/", "/usr/lib/", "/usr/share/",
+    "/windows/", "/winnt/", "\\windows\\", "\\winnt\\",
+    "system32", "cmd.exe", "powershell.exe",
 })
-
-
-def _is_path_traversal(value: str) -> bool:
-    try:
-        path = PurePath(value)
-    except TypeError:
-        return False
-
-    parts = path.parts
-
-    if ".." in parts:
-        return True
-
-    try:
-        posix = PurePosixPath(value)
-        if ".." in posix.parts:
-            return True
-    except TypeError:
-        pass
-
-    try:
-        win = PureWindowsPath(value)
-        if ".." in win.parts:
-            return True
-    except TypeError:
-        pass
-
-    return False
-
-
-def _is_absolute_path(value: str) -> bool:
-    try:
-        path = PurePath(value)
-        return path.is_absolute()
-    except TypeError:
-        return False
 
 
 def _contains_sensitive(value: str) -> bool:
     lower = value.lower()
     return any(pattern in lower for pattern in SENSITIVE_PATTERNS)
+
+
+def _is_path_safe(value: str) -> bool:
+    try:
+        resolved = (WORKSPACE_DIR / str(value)).resolve()
+        return resolved.is_relative_to(WORKSPACE_DIR)
+    except Exception:
+        return False
 
 
 def inspect_arguments(arguments: dict) -> dict:
@@ -74,24 +38,19 @@ def inspect_arguments(arguments: dict) -> dict:
                 if result:
                     return result
         elif isinstance(obj, str):
-            if _is_path_traversal(obj):
-                return {
-                    "safe": False,
-                    "risk_level": "critico",
-                    "reason": f"Detectado patrón de salto de directorio: '{obj}'",
-                }
-            if _is_absolute_path(obj):
-                return {
-                    "safe": False,
-                    "risk_level": "critico",
-                    "reason": f"Detectada ruta absoluta: '{obj}'",
-                }
             if _contains_sensitive(obj):
                 return {
                     "safe": False,
                     "risk_level": "critico",
-                    "reason": f"Detectada referencia a archivo o ruta sensible: '{obj}'",
+                    "reason": f"Detectada referencia estática prohibida: '{obj}'",
                 }
+            if "/" in obj or "\\" in obj:
+                if not _is_path_safe(obj):
+                    return {
+                        "safe": False,
+                        "risk_level": "critico",
+                        "reason": f"Violación de Sandbox: acceso fuera del workspace ({obj})",
+                    }
         return None
 
     result = _recurse(arguments)

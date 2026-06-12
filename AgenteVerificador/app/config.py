@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     LLM_MODEL_NAME: str = "llama-guard3:1b"
     ALLOWED_TOOLS: str = "ls,cat,head,read"
     ALLOWED_COMMANDS: str = "git status,git log,npm test,pytest"
+    WORKSPACE_DIR: str = "/app/sandbox"
 
 
 settings = Settings()
