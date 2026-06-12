@@ -11,7 +11,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     LLM_API_KEY: str
     LLM_MODEL_NAME: str = "llama-guard3:1b"
-    ALLOWED_TOOLS: str = "git,npm,pytest,ls,cat,head"
+    ALLOWED_TOOLS: str = "ls,cat,head,read"
+    ALLOWED_COMMANDS: str = "git status,git log,npm test,pytest"
 
 
 settings = Settings()

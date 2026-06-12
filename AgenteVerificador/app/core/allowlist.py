@@ -5,13 +5,16 @@ ALLOWED_TOOLS = frozenset(
     tool.strip() for tool in settings.ALLOWED_TOOLS.split(",") if tool.strip()
 )
 
+ALLOWED_COMMANDS = frozenset(
+    cmd.strip() for cmd in settings.ALLOWED_COMMANDS.split(",") if cmd.strip()
+)
+
 RUTAS_SENSIBLES = frozenset({
     "../", "/etc/passwd", "/etc/shadow", "/etc/hosts", "/etc/sudoers",
     ".ssh/", "~/.ssh/id_rsa", "~/.ssh/id_ed25519",
     ".git/config", "~/.bashrc", ".test-env", ".env",
     "/var/log/system.log", "/proc/1/cgroup", "/.dockerenv",
     "/home/", "/tmp/",
-    "/dev/tcp", "nc -e", "base64 -d", "bytes.fromhex",
 })
 
 
@@ -37,8 +40,19 @@ def _detectar_ruta_sensible(argumentos: dict) -> bool:
 
 
 def check_allowlist(tool_name: str, arguments: dict | None = None) -> dict:
-    if tool_name not in ALLOWED_TOOLS:                                              # No está en la lista
-        return {"allowed": False, "skip_next_layers": False, "risk_level": None}    # Continúa a las otras capas
-    if arguments and _detectar_ruta_sensible(arguments):                            # Detecta ruta sensible
-        return {"allowed": False, "skip_next_layers": False, "risk_level": None}    # Continúa a las otras capas
-    return {"allowed": True, "skip_next_layers": True, "risk_level": "bajo"}        # Está permitido y no se detectan riesgos, se salta el resto de capas para optimizar rendimiento
+    # Las rutas sensibles se evalúan primero sobre cualquier herramienta
+    if arguments and _detectar_ruta_sensible(arguments):
+        return {"allowed": False, "skip_next_layers": False, "risk_level": None}
+
+    # Si la herramienta es 'exec' (shell), validar comando exacto
+    if tool_name == "exec" and arguments and "command" in arguments:
+        comando = arguments["command"].strip()
+        if comando in ALLOWED_COMMANDS:
+            return {"allowed": True, "skip_next_layers": True, "risk_level": "bajo"}
+        return {"allowed": False, "skip_next_layers": False, "risk_level": None}
+
+    # Herramientas nativas permitidas (lectura, listado, etc.)
+    if tool_name not in ALLOWED_TOOLS:
+        return {"allowed": False, "skip_next_layers": False, "risk_level": None}
+
+    return {"allowed": True, "skip_next_layers": True, "risk_level": "bajo"}
