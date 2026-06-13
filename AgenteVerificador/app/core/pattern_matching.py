@@ -502,8 +502,33 @@ FIRMAS = [
 JERARQUIA_RIESGO = {"critico": 4, "alto": 3, "medio": 2, "bajo": 1, None: 0}
 BASE64_LARGO = re.compile(r"[A-Za-z0-9+/]{60,}={0,2}")
 
+# IDs de firmas que solo aplican a tool calls (no a texto generado)
+IDS_EXCLUIDOS_TEXTO = frozenset({
+    "RECON-001-SYSINFO", "RECON-001-PS", "RECON-002-NETCFG", "RECON-003-USER",
+    "SANDBOX-002-ABSOLUTE-PATH",
+    "LEAK-001-TOKENS",
+})
 
-def _recorrer_y_escanear(valor):
+# LEAK para texto
+FIRMA_LEAK_TEXTO = FirmaAtaque(
+    id="LEAK-001-TOKENS-TEXT",
+    categoria_owasp="LLM02",
+    descripcion="Filtracion de tokens o claves en la respuesta",
+    risk_level="alto",
+    patron=re.compile(
+        r"(?i)(?:sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{36,}"
+        r"|-----BEGIN\s+(?:RSA|OPENSSH|PRIVATE)\s+KEY-----)"
+    ),
+)
+
+FIRMAS_TEXTO = [
+    f for f in FIRMAS if f.id not in IDS_EXCLUIDOS_TEXTO
+] + [FIRMA_LEAK_TEXTO]
+
+
+def _recorrer_y_escanear(valor, firmas=None):
+    if firmas is None:
+        firmas = FIRMAS
     mejor = {"nivel": -1, "resultado": None}
 
     def _recurse(obj):
@@ -514,7 +539,7 @@ def _recorrer_y_escanear(valor):
             for item in obj:
                 _recurse(item)
         elif isinstance(obj, str):
-            for firma in FIRMAS:
+            for firma in firmas:
                 m = firma.patron.search(obj)
                 if m:
                     nivel = JERARQUIA_RIESGO.get(firma.risk_level, 0)
@@ -551,7 +576,7 @@ def escanear_argumentos(argumentos: dict) -> dict:
     return {"safe": True, "risk_level": None}
 
 def escanear_texto(texto: str) -> dict:
-    resultado = _recorrer_y_escanear(texto)
+    resultado = _recorrer_y_escanear(texto, FIRMAS_TEXTO)
     if resultado:
         return resultado
     return {"safe": True, "risk_level": None}

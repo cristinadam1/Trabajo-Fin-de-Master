@@ -134,9 +134,10 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
             f"(riesgo: {riesgo_patron}, coincidencia: '{resultado_patrones['match']}')"
         )
 
-    # Capa 4 = Semantic Judge sobre la respuesta generada
+    # Capa 4 = Semantic Judge sobre la respuesta generada (modo texto: solo S1-S13)
     resultado_juez = await analizar_con_juez(
-        "salida_chat", {"consulta": datos.consulta, "respuesta": datos.respuesta}
+        "salida_chat", {"consulta": datos.consulta, "respuesta": datos.respuesta},
+        modo="texto",
     )
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
