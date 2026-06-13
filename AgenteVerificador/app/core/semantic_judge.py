@@ -65,7 +65,7 @@ PLANTILLA_CHAT = (
 async def analizar_con_juez(nombre_herramienta: str, argumentos: dict, modo: str = "herramienta") -> dict:
     cliente = AsyncOpenAI(
         api_key=settings.LLM_API_KEY,
-        base_url="http://host.docker.internal:11434/v1",
+        base_url=settings.LLM_BASE_URL,
     )
 
     if modo == "texto":

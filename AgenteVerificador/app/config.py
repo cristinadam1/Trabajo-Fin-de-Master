@@ -11,8 +11,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     LLM_API_KEY: str
     LLM_MODEL_NAME: str = "llama-guard3:1b"
-    ALLOWED_TOOLS: str = "ls,cat,head,read"
-    ALLOWED_COMMANDS: str = "git status,git log,npm test,pytest"
+    LLM_BASE_URL: str = "http://host.docker.internal:11434/v1"
+    # read es la única herramienta nativa con fast-path: es solo lectura,
+    # no modifica estado. write, edit y exec pasan por el pipeline completo.
+    # Asumimos que el workspace no contiene symlinks maliciosos (no ha habido brecha previa)
+    ALLOWED_TOOLS: str = "read"
+    ALLOWED_COMMANDS: str = "git status, npm test"
+    ALLOWED_COMMAND_PREFIXES: str = "ls, cat, head"
     WORKSPACE_DIR: str = "/app/sandbox"
 
 
