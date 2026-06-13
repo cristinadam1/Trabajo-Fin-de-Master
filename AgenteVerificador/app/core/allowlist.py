@@ -51,7 +51,7 @@ def check_allowlist(tool_name: str, arguments: dict | None = None) -> dict:
             return {"allowed": True, "skip_next_layers": True, "risk_level": "bajo"}
         return {"allowed": False, "skip_next_layers": False, "risk_level": None}
 
-    # Herramientas nativas permitidas (lectura, listado, etc.)
+    # Herramientas nativas permitidas (lectura, listado ...)
     if tool_name not in ALLOWED_TOOLS:
         return {"allowed": False, "skip_next_layers": False, "risk_level": None}
 
