@@ -25,19 +25,19 @@ def _generar_justificacion(
     razones: list[str],
     resultado_juez: dict[str, Any] | None,
 ) -> str:
-    partes: list[str] = ["🔍 Detecciones por capa:"]
+    partes: list[str] = ["Detecciones por capa:"]
     for r in razones:
         partes.append(f"  • {r}")
     if resultado_juez:
         v = resultado_juez
-        juez_texto = "Seguro ✅" if v.get("safe") else "Inseguro ❌"
+        juez_texto = "Seguro" if v.get("safe") else "Inseguro"
         partes.append(
             f"  • Juez semántico: {juez_texto} "
             f"(cualificación: {v.get('qualification', 'N/A')})"
         )
         if v.get("explanation"):
             partes.append(f"   Explicación del juez: {v['explanation']}")
-    riesgo_nombre = {"bajo": "Bajo ✅", "medio": "Medio ⚠️", "alto": "Alto 🚨", "critico": "Crítico 🛑"}
+    riesgo_nombre = {"bajo": "Bajo", "medio": "Medio", "alto": "Alto", "critico": "Crítico"}
     partes.append(f"  • Riesgo final: {riesgo_nombre.get(riesgo_final, riesgo_final)}")
     if riesgo_final in ("alto", "critico"):
         partes.append("   Requiere revisión humana antes de continuar.")
@@ -92,12 +92,12 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
             "feedback": None,
         }
 
-    # Capa 4 = Semantic Judge (lenta, LLM, solo si las rápidas no rechazaron)
+    # Capa 4 = Semantic Judge (lenta, LLM, solo si las rápidas no han rechzado)
     resultado_juez = await analizar_con_juez(datos.tool_name, datos.arguments)
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
 
-    # Consolidación final
+
     riesgo_final = riesgo_acumulado or "bajo"
 
     if riesgo_final == "bajo":
