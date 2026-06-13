@@ -4,18 +4,6 @@ from config import settings
 
 WORKSPACE_DIR = Path(settings.WORKSPACE_DIR).resolve()
 
-SENSITIVE_PATTERNS = frozenset({
-    "/etc/", "/var/", "/root/", "/sys/", "/proc/", "/boot/",
-    "/usr/bin/", "/usr/lib/", "/usr/share/",
-    "/windows/", "/winnt/", "\\windows\\", "\\winnt\\",
-    "system32", "cmd.exe", "powershell.exe",
-})
-
-
-def _contains_sensitive(value: str) -> bool:
-    lower = value.lower()
-    return any(pattern in lower for pattern in SENSITIVE_PATTERNS)
-
 
 def _is_path_safe(value: str) -> bool:
     try:
@@ -38,12 +26,6 @@ def inspect_arguments(arguments: dict) -> dict:
                 if result:
                     return result
         elif isinstance(obj, str):
-            if _contains_sensitive(obj):
-                return {
-                    "safe": False,
-                    "risk_level": "critico",
-                    "reason": f"Detectada referencia estática prohibida: '{obj}'",
-                }
             if "/" in obj or "\\" in obj:
                 if not _is_path_safe(obj):
                     return {

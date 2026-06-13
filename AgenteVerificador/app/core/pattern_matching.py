@@ -385,6 +385,16 @@ FIRMAS = [
         patron=re.compile(r"(?i)ln\s+-s\s+"),
     ),
     FirmaAtaque(
+        id="SANDBOX-002-ABSOLUTE-PATH",
+        categoria_owasp="LLM06",
+        descripcion="Acceso a rutas absolutas del sistema operativo [SANDBOX-002]",
+        risk_level="alto",
+        patron=re.compile(
+            r"(?i)(/var/log/|/boot/|/proc/|/windows/|/winnt/"
+            r"|\\windows\\|\\winnt\\|system32|cmd\.exe|powershell\.exe)"
+        ),
+    ),
+    FirmaAtaque(
         id="EXEC-003-SERVER",
         categoria_owasp="LLM06",
         descripcion="Servidor HTTP Python malicioso en segundo plano [EXEC-003]",
