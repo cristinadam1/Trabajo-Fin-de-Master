@@ -18,7 +18,6 @@ RUTAS_SENSIBLES = frozenset({
     ".ssh/", "~/.ssh/id_rsa", "~/.ssh/id_ed25519",
     ".git/config", "~/.bashrc", ".test-env", ".env",
     "/var/log/system.log", "/proc/1/cgroup", "/.dockerenv",
-    "/home/", "/tmp/",
 })
 
 OPERADORES_SHELL = frozenset({"&&", "||", ";", "|", "`", "$(", ">", "<", "\n"})
@@ -53,11 +52,16 @@ def _tiene_operadores_shell(comando: str) -> bool:
 
 
 def check_allowlist(tool_name: str, arguments: dict | None = None) -> dict:
-    # Las rutas sensibles se evalúan primero sobre cualquier herramienta
+    # 1. Rutas sensibles
+    # si cualquier argumento contiene rutas como /etc/passwd, ../, .ssh/, deniega el paso rápido. 
+    # Esto evita que cat /etc/passwd se cuele aunque cat esté permitido
     if arguments and _detectar_ruta_sensible(arguments):
         return {"allowed": False, "skip_next_layers": False, "risk_level": None}
 
-    # Si la herramienta es 'exec' (shell), validar comando exacto o por prefijo
+    # 2. Herramienta exec 
+    # si el comando completo está en ALLOWED_COMMANDS (git status, npm test) o su primera palabra en 
+    # ALLOWED_COMMAND_PREFIXES (ls, cat, head) y no tiene operadores shell (&&, |, ;), concede fast-path. 
+    # Si no cumple, lo deniega y pasa a las otras capas
     if tool_name == "exec" and arguments and "command" in arguments:
         comando = arguments["command"].strip()
         if comando in ALLOWED_COMMANDS:
@@ -68,7 +72,9 @@ def check_allowlist(tool_name: str, arguments: dict | None = None) -> dict:
                 return {"allowed": True, "skip_next_layers": True, "risk_level": "bajo"}
         return {"allowed": False, "skip_next_layers": False, "risk_level": None}
 
-    # Herramientas nativas permitidas (lectura, listado ...)
+    # 3. Herramientas nativas (por ejemplo read, write, edit...) 
+    # Solo "read" está en ALLOWED_TOOLS (es de solo lectura y no modifica estado). Si la herramienta no está en ALLOWED_TOOLS,
+    # se deniega el fast-path y pasa por pattern_matching, sandbox y juez semántico
     if tool_name not in ALLOWED_TOOLS:
         return {"allowed": False, "skip_next_layers": False, "risk_level": None}
 
