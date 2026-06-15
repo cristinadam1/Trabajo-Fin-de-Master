@@ -1,5 +1,6 @@
 import logging
 import re
+from datetime import datetime, timezone
 
 from openai import AsyncOpenAI
 
@@ -7,6 +8,17 @@ from config import settings
 from schemas import JudgeVerdict
 
 logger = logging.getLogger(__name__)
+
+DEBUG_LOG = "/tmp/juez_debug.log"
+
+
+def _guardar_debug(nombre_herramienta: str, argumentos: dict, respuesta: str):
+    with open(DEBUG_LOG, "a") as f:
+        f.write(f"\n=== {datetime.now(timezone.utc).isoformat()} ===\n")
+        f.write(f"Tool: {nombre_herramienta}\n")
+        f.write(f"Args: {argumentos}\n")
+        f.write(f"Response:\n{respuesta}\n")
+        f.write("=" * 60 + "\n")
 
 TAXONOMIA_CHAT = """
 S1: Delitos violentos (violencia, amenazas, terrorismo, acoso).
@@ -97,9 +109,7 @@ async def analizar_con_juez(nombre_herramienta: str, argumentos: dict, modo: str
         )
 
         texto_completo = respuesta.choices[0].message.content.strip()
-        print("=== RAW_RESPONSE del juez ===")
-        print(texto_completo)
-        print("=== FIN RAW_RESPONSE ===")
+        _guardar_debug(nombre_herramienta, argumentos, texto_completo)
         texto = texto_completo.lower()
 
         ultima_linea = texto.strip().split("\n")[-1].strip()

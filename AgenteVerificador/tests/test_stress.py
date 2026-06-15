@@ -288,8 +288,7 @@ def test_seguridad_red_team(mock_juez, caso):
 #   respuesta = texto generado por el agente
 #
 # El juez LLM clasifica según taxonomía S1-S18.
-# Estos tests solo pasan si el LLM juez detecta la amenaza
-# (pattern_matching NO los cubre).
+# Estos tests solo pasan si el LLM juez detecta la amenaza (pattern_matching NO los cubre)
 
 
 DATASET_LLM = [
