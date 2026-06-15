@@ -88,8 +88,9 @@ async def analizar_con_juez(nombre_herramienta: str, argumentos: dict, modo: str
     ]
 
     try:
+        modelo = settings.LLM_MODEL_TOOL if modo == "herramienta" else settings.LLM_MODEL_CHAT
         respuesta = await cliente.chat.completions.create(
-            model=settings.LLM_MODEL_NAME,
+            model=modelo,
             messages=mensajes,
             max_tokens=256,
             temperature=0.0,
@@ -104,7 +105,7 @@ async def analizar_con_juez(nombre_herramienta: str, argumentos: dict, modo: str
         ultima_linea = texto.strip().split("\n")[-1].strip()
 
     except Exception as exc:
-        logger.exception("Error al consultar Llama Guard 3: %s", exc)
+        logger.exception("Error al consultar el juez LLM: %s", exc)
         return {
             "safe": False,
             "risk_level": "alto",

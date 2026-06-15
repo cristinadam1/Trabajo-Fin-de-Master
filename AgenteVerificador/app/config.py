@@ -10,10 +10,10 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Agente Verificador de Seguridad"
     DATABASE_URL: str
     LLM_API_KEY: str
-    LLM_MODEL_NAME: str = "llama-guard3:1b"
+    LLM_MODEL_TOOL: str = "qwen3.6:27b"
+    LLM_MODEL_CHAT: str = "llama-guard3:8b"
     LLM_BASE_URL: str = "http://host.docker.internal:11434/v1"
-    # read es la única herramienta nativa con fast-path: es solo lectura,
-    # no modifica estado. write, edit y exec pasan por el pipeline completo.
+    # read es la única herramienta nativa con fast-path: es solo lectura, no modifica estado. write, edit y exec pasan por el pipeline completo.
     # Asumimos que el workspace no contiene symlinks maliciosos (no ha habido brecha previa)
     ALLOWED_TOOLS: str = "read"
     ALLOWED_COMMANDS: str = "git status, npm test"
