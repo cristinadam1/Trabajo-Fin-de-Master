@@ -96,7 +96,9 @@ async def analizar_con_juez(nombre_herramienta: str, argumentos: dict, modo: str
         )
 
         texto_completo = respuesta.choices[0].message.content.strip()
-        logger.info("RAW_RESPONSE del juez\n%s", texto_completo)
+        print("=== RAW_RESPONSE del juez ===")
+        print(texto_completo)
+        print("=== FIN RAW_RESPONSE ===")
         texto = texto_completo.lower()
 
         ultima_linea = texto.strip().split("\n")[-1].strip()
