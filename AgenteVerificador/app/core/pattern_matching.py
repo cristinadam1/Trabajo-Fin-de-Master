@@ -397,9 +397,9 @@ FIRMAS = [
     FirmaAtaque(
         id="EXEC-003-SERVER",
         categoria_owasp="LLM06",
-        descripcion="Servidor HTTP Python malicioso en segundo plano [EXEC-003]",
+        descripcion="Servidor HTTP Python malicioso [EXEC-003]",
         risk_level="alto",
-        patron=re.compile(r"(?i)python.*-m\s+http\.server"),
+        patron=re.compile(r"(?i)(?:python.*-m\s+http\.server|http\.server\.test\s*\()"),
     ),
 
     # COLLECT / LEAK : Filtración y portapapeles (LLM02)
@@ -457,6 +457,13 @@ FIRMAS = [
         descripcion="Envenenamiento de la configuracion de Git [SUPPLY-001]",
         risk_level="critico",
         patron=re.compile(r"(?i)(?:>>|>)\s*\.?git/config"),
+    ),
+    FirmaAtaque(
+        id="SUPPLY-001-GIT-CONFIG",
+        categoria_owasp="LLM06",
+        descripcion="Redireccion de hooks de Git via core.hooksPath [SUPPLY-001]",
+        risk_level="alto",
+        patron=re.compile(r"(?i)git\s+config\s+core\.hooksPath\s+"),
     ),
     FirmaAtaque(
         id="SUPPLY-002-PY",
