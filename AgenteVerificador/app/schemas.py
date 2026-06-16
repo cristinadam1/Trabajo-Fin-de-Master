@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 class ToolCallInput(BaseModel):
     tool_name: str
     arguments: dict
+    user_request: str = ""
     context_user_id: str | None = None
     timestamp: datetime | None = None
 

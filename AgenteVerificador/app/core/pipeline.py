@@ -93,7 +93,10 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
         }
 
     # Capa 4 = Semantic Judge (lenta, LLM, solo si las rápidas no han rechzado)
-    resultado_juez = await analizar_con_juez(datos.tool_name, datos.arguments)
+    resultado_juez = await analizar_con_juez(
+        datos.tool_name, datos.arguments,
+        user_request=datos.user_request,
+    )
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
 
@@ -138,6 +141,7 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     resultado_juez = await analizar_con_juez(
         "salida_chat", {"consulta": datos.consulta, "respuesta": datos.respuesta},
         modo="texto",
+        user_request=datos.consulta,
     )
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
