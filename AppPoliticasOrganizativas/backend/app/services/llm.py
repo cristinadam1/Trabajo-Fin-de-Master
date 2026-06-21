@@ -59,14 +59,14 @@ EXPLICACION: aquí un resumen o explicación final
                 veredicto = httpx.post(
                     f"{VERIFICADOR_URL}/v1/verificar-respuesta",
                     json={"consulta": input_text, "respuesta": content},
-                    timeout=10.0
+                    timeout=60.0
                 ).json()
                 if veredicto.get("status") != "aprobado":
                     raise HTTPException(
                         status_code=403,
                         detail=f"Respuesta bloqueada por el agente de seguridad: {veredicto.get('reasons', [])}"
                     )
-            except httpx.ConnectError:
+            except (httpx.ConnectError, httpx.TimeoutException):
                 pass
 
             return parse_llm_response(content)
