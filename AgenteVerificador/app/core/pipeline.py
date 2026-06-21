@@ -98,7 +98,7 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
         user_request=datos.user_request,
     )
     if not resultado_juez["safe"]:
-        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, resultado_juez["risk_level"])
 
 
     riesgo_final = riesgo_acumulado or "bajo"
@@ -144,7 +144,7 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
         user_request=datos.consulta,
     )
     if not resultado_juez["safe"]:
-        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, "alto")
+        riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, resultado_juez["risk_level"])
 
     riesgo_final = riesgo_acumulado or "bajo"
 
