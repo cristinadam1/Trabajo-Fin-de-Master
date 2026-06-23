@@ -1,3 +1,4 @@
+import re
 import logging
 from typing import Any
 
@@ -145,6 +146,13 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     )
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, resultado_juez["risk_level"])
+        feedback = resultado_juez.get("feedback", "")
+        codigos = re.findall(r"S\d+", feedback)
+        if codigos:
+            razones.append(
+                f"[LlamaGuard3] Contenido inseguro detectado: "
+                f"{', '.join(codigos)}"
+            )
 
     riesgo_final = riesgo_acumulado or "bajo"
 
