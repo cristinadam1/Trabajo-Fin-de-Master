@@ -160,7 +160,7 @@ async def _analizar_chat(
             "raw_response": texto_completo,
         }
 
-    codigos = re.findall(r"S\d+", ultima_linea)
+    codigos = re.findall(r"[Ss]\d+", ultima_linea)
     codigos_str = ", ".join(codigos) if codigos else "código desconocido"
 
     return {
