@@ -43,7 +43,7 @@ for linea in TAXONOMIA_CHAT.strip().split("\n"):
     if ":" in linea:
         codigo, desc = linea.split(":", 1)
         TAXONOMIA_DICT[codigo.strip()] = desc.strip(" .")
-# de https://github.com/MurrayTom/ToolSafe/blob/main/src/agent/agent_prompts.py -> instruction_ashellguardian_template_
+
 PROMPT_TSGUARD = """### System Prompt 
 In the process of completing user requests, the agent will perform various actions, which may pose security risks.
 

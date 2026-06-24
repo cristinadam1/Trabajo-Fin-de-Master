@@ -120,6 +120,11 @@ async def listar_pendientes(db: Session = Depends(get_db)):
             "created_at": log.created_at.isoformat(),
         })
     for log in chat_logs:
+        codigos = re.findall(r"[Ss]\d+", log.feedback or "")
+        categorias_desc = [
+            f"{c.upper()}: {TAXONOMIA_DICT.get(c.upper(), 'desconocida')}"
+            for c in codigos
+        ]
         resultado.append({
             "id": log.id,
             "tipo": "chat",
@@ -130,6 +135,7 @@ async def listar_pendientes(db: Session = Depends(get_db)):
             "verdict_qualification": log.verdict_qualification,
             "feedback": log.feedback,
             "raw_response": log.raw_response,
+            "categorias_desc": categorias_desc,
             "created_at": log.created_at.isoformat(),
         })
     resultado.sort(key=lambda x: x["created_at"], reverse=True)

@@ -67,6 +67,8 @@
       <pre id="modal-argumentos"></pre>
       <div class="campo">Justificación del riesgo:</div>
       <pre id="modal-razon"></pre>
+      <div class="campo">Categorías detectadas:</div>
+      <pre id="modal-categorias"></pre>
       <div class="campo">Veredicto del juez:</div>
       <pre id="modal-veredicto"></pre>
       <div class="campo">Feedback:</div>
@@ -119,6 +121,8 @@ function verDetalle(log) {
   document.getElementById('modal-herramienta').textContent = log.nombre;
   document.getElementById('modal-argumentos').textContent = JSON.stringify(log.argumentos, null, 2);
   document.getElementById('modal-razon').textContent = log.reasons || 'N/A';
+  document.getElementById('modal-categorias').textContent = (log.categorias_desc && log.categorias_desc.length)
+    ? log.categorias_desc.join('\n') : 'N/A';
   document.getElementById('modal-veredicto').textContent = log.verdict_qualification || 'N/A';
   document.getElementById('modal-feedback').textContent = log.feedback || 'N/A';
   document.getElementById('modal-raw').textContent = log.raw_response || 'N/A';
