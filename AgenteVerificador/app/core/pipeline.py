@@ -147,7 +147,7 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, resultado_juez["risk_level"])
         feedback = resultado_juez.get("feedback", "")
-        codigos = re.findall(r"S\d+", feedback)
+        codigos = re.findall(r"[Ss]\d+", feedback)
         if codigos:
             razones.append(
                 f"[LlamaGuard3] Contenido inseguro detectado: "
