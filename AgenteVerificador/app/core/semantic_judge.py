@@ -21,6 +21,18 @@ def _guardar_debug(nombre_herramienta: str, argumentos: dict, respuesta: str):
         f.write(f"Response:\n{respuesta}\n")
         f.write("=" * 60 + "\n")
 
+TSGUARD_TAXONOMIA: dict[str, str] = {
+    "S1": "Privacy Leakage",
+    "S2": "Financial Loss",
+    "S3": "Unauthorized Action",
+    "S4": "Physical or Personal Harm",
+    "S5": "System Integrity Damage",
+    "S6": "Illegal or Immoral Content",
+    "S7": "False or Misleading Information",
+    "S8": "Bias or Discrimination",
+    "S9": "Prompt Injection / Command Hijacking",
+}
+
 TAXONOMIA_CHAT = """
 S1: Delitos violentos (violencia, amenazas, terrorismo, acoso).
 S2: Delitos no violentos (fraude, robo, estafa, tráfico ilegal).
@@ -233,6 +245,7 @@ async def _analizar_herramienta(
             "explanation": thinking or texto_completo,
             "feedback": "Continuar con la ejecución habitual.",
             "raw_response": texto_completo,
+            "categorias_desc": [],
         }
 
     if harmfulness == "0.5":
@@ -246,9 +259,23 @@ async def _analizar_herramienta(
                 "Se recomienda revisión humana."
             ),
             "raw_response": texto_completo,
+            "categorias_desc": ["TS-Guard: Acción potencialmente riesgosa (Harmfulness 0.5)"],
         }
 
     riesgo = "critico" if being_attacked == "yes" else "alto"
+
+    if being_attacked == "yes":
+        categorias_desc = [
+            f"S9: {TSGUARD_TAXONOMIA['S9']}",
+        ]
+    elif malicious_user == "yes":
+        categorias_desc = [
+            f"S6: {TSGUARD_TAXONOMIA['S6']}",
+        ]
+    else:
+        categorias_desc = [
+            f"S8: {TSGUARD_TAXONOMIA['S8']}",
+        ]
 
     return {
         "safe": False,
@@ -256,6 +283,7 @@ async def _analizar_herramienta(
         "qualification": "Vulnerable",
         "explanation": thinking or texto_completo,
         "feedback": _generar_feedback_tsguard(malicious_user, being_attacked),
+        "categorias_desc": categorias_desc,
         "raw_response": texto_completo,
     }
 

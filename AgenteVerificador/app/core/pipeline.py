@@ -119,6 +119,7 @@ async def evaluate_tool_call(datos: ToolCallInput) -> dict[str, Any]:
         "explanation": _generar_justificacion(riesgo_final, razones, resultado_juez),
         "feedback": resultado_juez.get("feedback") if resultado_juez else None,
         "raw_response": resultado_juez.get("raw_response") if resultado_juez else None,
+        "categorias_desc": resultado_juez.get("categorias_desc", []) if resultado_juez else [],
     }
 
 

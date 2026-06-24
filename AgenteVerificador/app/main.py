@@ -72,6 +72,7 @@ async def verify(datos: ToolCallInput, db: Session = Depends(get_db)):
         "status": resultado["status"],
         "tool_name": resultado["tool_name"],
         "reasons": resultado.get("reasons", []),
+        "categorias_desc": resultado.get("categorias_desc", []),
     }
 
 
@@ -80,12 +81,18 @@ async def estado_verificacion(log_id: int, db: Session = Depends(get_db)):
     log = db.query(SecurityAuditLog).filter(SecurityAuditLog.id == log_id).first()
     if not log:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
+    codigos = re.findall(r"[Ss]\d+", log.feedback or "")
+    categorias_desc = [
+        f"{c.upper()}: {TAXONOMIA_DICT.get(c.upper(), 'desconocida')}"
+        for c in codigos
+    ]
     return {
         "log_id": log.id,
         "tool_name": log.tool_name,
         "risk_level": log.risk_level,
         "status": log.status,
         "reasons": log.explanation,
+        "categorias_desc": categorias_desc,
         "created_at": log.created_at.isoformat(),
     }
 
@@ -108,6 +115,12 @@ async def listar_pendientes(db: Session = Depends(get_db)):
     )
     resultado = []
     for log in tool_logs:
+        feedback = log.feedback or ""
+        codigos = re.findall(r"[Ss]\d+", feedback)
+        categorias_desc = [
+            f"{c.upper()}: {TAXONOMIA_DICT.get(c.upper(), 'desconocida')}"
+            for c in codigos
+        ]
         resultado.append({
             "id": log.id,
             "tipo": "tool",
@@ -118,6 +131,7 @@ async def listar_pendientes(db: Session = Depends(get_db)):
             "verdict_qualification": log.verdict_qualification,
             "feedback": log.feedback,
             "raw_response": log.raw_response,
+            "categorias_desc": categorias_desc,
             "created_at": log.created_at.isoformat(),
         })
     for log in chat_logs:
