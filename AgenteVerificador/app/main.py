@@ -1,3 +1,4 @@
+import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -120,7 +121,8 @@ async def listar_pendientes(db: Session = Depends(get_db)):
             "created_at": log.created_at.isoformat(),
         })
     for log in chat_logs:
-        codigos = re.findall(r"[Ss]\d+", log.feedback or "")
+        feedback = log.feedback or ""
+        codigos = re.findall(r"[Ss]\d+", feedback)
         categorias_desc = [
             f"{c.upper()}: {TAXONOMIA_DICT.get(c.upper(), 'desconocida')}"
             for c in codigos
