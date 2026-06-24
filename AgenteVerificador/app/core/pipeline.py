@@ -1,4 +1,3 @@
-import re
 import logging
 from typing import Any
 
@@ -146,9 +145,9 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
     )
     if not resultado_juez["safe"]:
         riesgo_acumulado = _maximo_riesgo(riesgo_acumulado, resultado_juez["risk_level"])
-        feedback = resultado_juez.get("feedback", "")
-        codigos = re.findall(r"[Ss]\d+", feedback)
-        if codigos:
+        categorias_desc = resultado_juez.get("categorias_desc", [])
+        if categorias_desc:
+            codigos = [c.split(":")[0] for c in categorias_desc]
             razones.append(
                 f"[LlamaGuard3] Contenido inseguro detectado: "
                 f"{', '.join(codigos)}"
@@ -171,4 +170,5 @@ async def evaluar_salida_chat(datos: EntradaSalidaChat) -> dict[str, Any]:
         "feedback": resultado_juez.get("feedback"),
         "raw_response": resultado_juez.get("raw_response"),
         "reasons": razones,
+        "categorias_desc": resultado_juez.get("categorias_desc", []),
     }

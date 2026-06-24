@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from config import settings
 from core.pipeline import evaluate_tool_call, evaluar_salida_chat
+from core.semantic_judge import TAXONOMIA_DICT
 from database import Base, engine, get_db
 from models import RegistroAuditoriaChat, SecurityAuditLog
 from schemas import EntradaSalidaChat, ToolCallInput
@@ -178,6 +179,7 @@ async def verificar_respuesta(datos: EntradaSalidaChat, db: Session = Depends(ge
         "risk_level": resultado["risk_level"],
         "status": resultado["status"],
         "reasons": resultado.get("reasons", []),
+        "categorias_desc": resultado.get("categorias_desc", []),
     }
 
 
@@ -186,11 +188,17 @@ async def estado_respuesta(log_id: int, db: Session = Depends(get_db)):
     log = db.query(RegistroAuditoriaChat).filter(RegistroAuditoriaChat.id == log_id).first()
     if not log:
         raise HTTPException(status_code=404, detail="Registro no encontrado")
+    codigos = re.findall(r"[Ss]\d+", log.feedback or "")
+    categorias_desc = [
+        f"{c.upper()}: {TAXONOMIA_DICT.get(c.upper(), 'desconocida')}"
+        for c in codigos
+    ]
     return {
         "log_id": log.id,
         "consulta": log.consulta,
         "risk_level": log.risk_level,
         "status": log.status,
         "reasons": log.explanation,
+        "categorias_desc": categorias_desc,
         "created_at": log.created_at.isoformat(),
     }

@@ -36,6 +36,13 @@ S11: Suicidio y autolesiones (instrucciones, incitación, normalización).
 S12: Contenido sexual explícito (descripciones gráficas, pornografía).
 S13: Procesos electorales (desinformación, interferencia, suplantación de autoridades).
 """
+
+# Parsear taxonomía a dict para descripciones legibles
+TAXONOMIA_DICT: dict[str, str] = {}
+for linea in TAXONOMIA_CHAT.strip().split("\n"):
+    if ":" in linea:
+        codigo, desc = linea.split(":", 1)
+        TAXONOMIA_DICT[codigo.strip()] = desc.strip(" .")
 # de https://github.com/MurrayTom/ToolSafe/blob/main/src/agent/agent_prompts.py -> instruction_ashellguardian_template_
 PROMPT_TSGUARD = """### System Prompt 
 In the process of completing user requests, the agent will perform various actions, which may pose security risks.
@@ -162,6 +169,10 @@ async def _analizar_chat(
 
     codigos = re.findall(r"[Ss]\d+", ultima_linea)
     codigos_str = ", ".join(c.upper() for c in codigos) if codigos else "código desconocido"
+    descripciones = [
+        f"{c.upper()}: {TAXONOMIA_DICT.get(c.upper(), 'desconocida')}"
+        for c in codigos
+    ] if codigos else []
 
     return {
         "safe": False,
@@ -173,6 +184,7 @@ async def _analizar_chat(
             f"taxonomía de Meta. Bloquear la ejecución, registrar el "
             f"incidente y, si procede, escalar a revisión humana."
         ),
+        "categorias_desc": descripciones,
         "raw_response": texto_completo,
     }
 
