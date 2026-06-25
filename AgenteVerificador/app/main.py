@@ -144,7 +144,7 @@ async def listar_pendientes(db: Session = Depends(get_db)):
         resultado.append({
             "id": log.id,
             "tipo": "chat",
-            "nombre": f"consulta: {log.consulta[:50]}",
+            "nombre": f"consulta: {log.consulta[:200]}",
             "argumentos": {"consulta": log.consulta, "respuesta": log.respuesta},
             "risk_level": log.risk_level,
             "reasons": log.explanation,
