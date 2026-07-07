@@ -34,7 +34,7 @@ def create_generation(generation: GenerationCreate, db: Session = Depends(get_db
 
 
 @router.get("/generaciones", response_model=List[GenerationListResponse])
-def list_generaciones(skip: int = 0, limit: int = 50, favorite_only: bool = False, db: Session = Depends(get_db)):
+def list_generaciones(skip: int = 0, limit: int = 200, favorite_only: bool = False, db: Session = Depends(get_db)):
     query = db.query(Generation).order_by(Generation.created_at.desc())
     if favorite_only:
         query = query.filter(Generation.is_favorite == True)
