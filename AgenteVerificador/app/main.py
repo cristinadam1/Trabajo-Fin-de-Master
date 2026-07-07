@@ -103,14 +103,14 @@ async def listar_pendientes(db: Session = Depends(get_db)):
         db.query(SecurityAuditLog)
         .filter(SecurityAuditLog.status == "pendiente_revision")
         .order_by(SecurityAuditLog.created_at.desc())
-        .limit(50)
+        .limit(200)
         .all()
     )
     chat_logs = (
         db.query(RegistroAuditoriaChat)
         .filter(RegistroAuditoriaChat.status == "pendiente_revision")
         .order_by(RegistroAuditoriaChat.created_at.desc())
-        .limit(50)
+        .limit(200)
         .all()
     )
     resultado = []
