@@ -121,6 +121,5 @@ docker compose down -v
 ## Licencia y Autoría
 
 **Autora:** Cristina del Águila Martín  
-**Tutor:** Alberto Guillén Perales 
 **Trabajo Fin de Máster** - Máster Universitario en Ingeniería Informática  
 **Universidad de Granada** - 2026
