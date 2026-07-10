@@ -19,7 +19,7 @@ El repositorio se divide en dos carpetas principales:
 ### 1. `/AgenteVerificador` (Sistema II)
 Sistema de defensa en profundidad que evalúa las peticiones antes de su ejecución o visualización. Implementa un *pipeline* de cuatro capas secuenciales:
 1. **Allowlist**: Aprobación de operaciones conocidas y seguras.
-2. **Pattern Matching**: Comparación con 55 firmas OWASP.
+2. **Pattern Matching**: Comparación con 57 firmas OWASP.
 3. **Sandbox Guard**: Bloqueo de cruces de directorios (*path traversal*).
 4. **Juez Semántico**: Evaluación cognitiva mediante LLMs (LlamaGuard3 y TS-Guard).
 
@@ -41,7 +41,7 @@ Aplicación web desarrollada en React y FastAPI que permite generar documentos n
 
 ## Requisitos Previos
 
-Antes de desplegar el sistema, asegúrate de tener instalados los siguientes componentes:
+Antes de desplegar el sistema, asegurarse de tener instalados los siguientes componentes:
 
 - **Docker Desktop** 
 - **Ollama** 
@@ -55,7 +55,7 @@ Antes de desplegar el sistema, asegúrate de tener instalados los siguientes com
 
 ### 1. Iniciar Ollama y descargar modelos
 
-El motor de inferencia debe ejecutarse de forma nativa. Inicia el servicio y descarga los modelos base:
+El motor de inferencia debe ejecutarse de forma nativa. Iniciar el servicio y descargar los modelos base:
 
 ```bash
 ollama serve
@@ -63,7 +63,7 @@ ollama pull llama3.2:1b
 ollama pull llama-guard3:8b
 ```
 
-Para utilizar el modelo abliterado y TS-Guard, consulta la memoria del proyecto para ver las instrucciones de conversión de `.safetensors` a `.gguf` e importación mediante `Modelfile`.
+Para utilizar el modelo abliterado y TS-Guard, consultar la memoria del proyecto para ver las instrucciones de conversión de `.safetensors` a `.gguf` e importación mediante `Modelfile`.
 
 ### 2. Clonar el repositorio
 
@@ -104,13 +104,13 @@ Una vez que todos los contenedores estén levantados, los servicios estarán dis
 
 ## Detención del sistema
 
-Para detener los contenedores, ejecuta en cada carpeta:
+Para detener los contenedores, ejecutar en cada carpeta:
 
 ```bash
 docker compose down
 ```
 
-Si deseas borrar la base de datos y empezar de cero, añade el flag `-v`:
+Para borrar la base de datos y empezar de cero, añadir el flag `-v`:
 
 ```bash
 docker compose down -v
