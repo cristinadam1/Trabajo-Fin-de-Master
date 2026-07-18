@@ -268,7 +268,7 @@ FIRMAS = [
         id="INJECT-001-INDIRECT",
         categoria_owasp="LLM01",
         descripcion="Inyeccion indirecta via datos externos [INJECT-001]",
-        risk_level="critico",
+        risk_level="medio",
         patron=re.compile(
             r"(?i)(?:fuente|source|url|link|documento)\s*(?:\w+\s*){0,3}(?:contiene|dice|indica)"
         ),
